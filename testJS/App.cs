@@ -8,8 +8,8 @@ namespace testJS
         [Ready]
         public static void Main()
         {
-            // Simple alert() to confirm it's working
-            Global.Alert("Success");
+            Main main = new Main();
+            main.say("Success");
         }
     }
 }
