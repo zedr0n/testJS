@@ -10,6 +10,8 @@ namespace testJS
         {
             Main main = new Main();
             main.say("Success");
+
+            main.say("Exiting");
         }
     }
 }
