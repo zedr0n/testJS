@@ -1,5 +1,6 @@
 ﻿using Bridge;
 using Bridge.Html5;
+using Bridge.jQuery2;
 
 namespace testJS
 {
@@ -8,10 +9,18 @@ namespace testJS
         [Ready]
         public static void Main()
         {
-            Main main = new Main();
-            main.say("Success");
+            //Main main = new Main();
+            //main.say("Success");
+            //main.say("Exiting");
+            Script.Write("debugger");
+            var msg = jQuery.Select("#helloMsg");
+            msg.Val("Success");
 
-            main.say("Exiting");
+            if (msg == null)
+                Console.Log("Couldn't find element");
+            else
+                Console.Log(msg.Val());
+
         }
     }
 }
