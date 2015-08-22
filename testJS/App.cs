@@ -12,7 +12,7 @@ namespace testJS
             //Main main = new Main();
             //main.say("Success");
             //main.say("Exiting");
-            Script.Write("debugger");
+            // Script.Write("debugger");
             var msg = jQuery.Select("#helloMsg");
             msg.Val("Success");
 
@@ -21,6 +21,9 @@ namespace testJS
             else
                 Console.Log(msg.Val());
 
+            var helloBtn = jQuery.Select("#helloBtn");
+
+            helloBtn.On("click", () => Console.Log("Button clicked"));
         }
     }
 }
