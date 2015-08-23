@@ -10,3 +10,32 @@
     margin-top: 20px;
 }
 
+.special
+{
+    height: 100%;
+}
+
+.container-fluid
+{
+    margin: 0 auto;
+    height: 100%;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.fullheight
+{
+    height: 100%;
+}
+
+.header
+{
+}
+
+
+.footer
+{
+    margin-bottom: 10px;
+}
+
