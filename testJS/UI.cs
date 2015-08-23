@@ -12,13 +12,18 @@ namespace testJS
 {
     public class UI
     {
-        public int windowHeight = Window.InnerHeight;
-
         public class Area
         {
             public int initialHeight;
             public int initialOuterHeight;
             protected jQuery jquery;
+            protected Margin _margin;
+            protected OuterHeight _outerHeight;
+            protected Height _height;
+
+            protected List<Property<int>> properties;
+
+            protected bool cssUpdated = false;
 
             // disable default constructor
             private Area() { }
@@ -27,20 +32,141 @@ namespace testJS
                 jquery = jQuery.Select(selection);
                 initialHeight = jquery.Height();
                 initialOuterHeight = jquery.OuterHeight(true);
+
+                // create properties
+                _margin = new Margin(jquery);
+                _outerHeight = new OuterHeight(jquery);
+                _height = new Height(jquery);
+
+                // update properties list
+                properties.Add(_margin);
+                properties.Add(_outerHeight);
+                properties.Add(_height);
+            }
+
+            public class Property<T>
+            {
+                protected jQuery jquery;
+
+                public bool syncFromCSS = false;
+                public bool toUpdateCSS = true;
+                
+                protected T value;
+                public T init;
+
+                // property node links
+                List<Property<T>> in;
+                List<Property<T>> out;
+
+                protected Property() { }
+                public Property(jQuery jquery)
+                {
+                    this.jquery = jquery;
+                    read();
+                    init = value;
+                }
+
+                public bool set(T value)
+                {
+                    this.value = value;
+                    if (toUpdateCSS)
+                    {
+                        write();
+                        toUpdateCSS = false;
+                        syncFromCSS = true;
+                    }
+
+                    return syncFromCSS;
+                }
+
+                public T get()
+                {
+                    if (syncFromCSS)
+                    {
+                        read();
+                        syncFromCSS = false;
+                        return value;
+                    }
+                    return value;
+                }
+
+                protected virtual void read() { }
+                protected virtual void write()
+                {
+                }
+
+            }
+            public class Margin : Property<int>
+            {
+                protected Margin() {}
+                public Margin(jQuery jquery) : base(jquery) { }
+
+                protected override void read()
+                {
+                    value = jquery.OuterHeight(true) - jquery.OuterHeight(false);
+                }
+            }
+            public class OuterHeight : Property<int>
+            {
+                private Height height;
+                protected OuterHeight() { }
+                public OuterHeight(jQuery jquery) : base(jquery) { }
+                public OuterHeight(jQuery jquery, Height height) : 
+                    base(jquery)
+                {
+                    this.height = height;
+                }
+
+                protected override void read()
+                {
+                    value = jquery.OuterHeight(true);
+                }
+            }
+            public class Height : Property<int>
+            {
+                protected Height() { }
+                public Height(jQuery jquery) : base(jquery) { }
+
+                protected override void read()
+                {
+                    value = jquery.Height();
+                }
+
+                protected override void write()
+                {
+                    jquery.Height(value);
+                }
+
             }
 
             public int margin
             {
-                get { return jquery.OuterHeight(true) - jquery.OuterHeight(false); }           
+                get {
+                    return _margin.get();
+                }
+                set {
+                    _margin.set(value);
+                }
             }
             public int outerHeight
             {
-                get { return jquery.OuterHeight(true);  }
+                get {
+                    return _outerHeight.get();
+                }
+                set { _outerHeight.set(value); }
             }
             public virtual int height
             {
-                get { return jquery.Height(); }
-                set { jquery.Height(value);  }
+                get {
+                    return _height.get();
+                }
+                set {
+                    cssUpdated = _height.set(value);
+
+                    // notify properties that CSS changed
+                    foreach(Property<int> prop in properties)
+                        prop.syncFromCSS = cssUpdated;
+                }
             }
         }
         public class Header : Area
