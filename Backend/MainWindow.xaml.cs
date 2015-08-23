@@ -13,6 +13,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+using Awesomium.Core;
+using Awesomium.Core.Data;
+
 namespace Backend
 {
     /// <summary>
@@ -22,7 +25,16 @@ namespace Backend
     {
         public MainWindow()
         {
+            // Create a WebSession.
+            WebSession session = WebCore.CreateWebSession(new WebPreferences()
+            {
+                SmoothScrolling = true,
+            });
+            session.AddDataSource("core", new ResourceDataSource(ResourceType.Embedded));
+
             InitializeComponent();
+
+            webControl.WebSession = session;
         }
     }
 }

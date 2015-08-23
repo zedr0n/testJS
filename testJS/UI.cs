@@ -54,10 +54,6 @@ namespace testJS
                 protected T value;
                 public T init;
 
-                // property node links
-                List<Property<T>> in;
-                List<Property<T>> out;
-
                 protected Property() { }
                 public Property(jQuery jquery)
                 {
