@@ -91,35 +91,9 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-    <None Include="resources\bootstrap\css\bootstrap.css.map" />
-    <None Include="resources\bootstrap\fonts\glyphicons-halflings-regular.eot" />
-    <Resource Include="resources\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
-    <None Include="resources\bootstrap\fonts\glyphicons-halflings-regular.woff" />
-    <None Include="resources\pinegrow.json" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="resources\assets\img\img1.jpg" />
-    <Content Include="resources\assets\js\bridge.js" />
-    <Content Include="resources\assets\js\bridge.min.js" />
-    <Content Include="resources\assets\js\holder.js" />
-    <Content Include="resources\assets\js\holder.min.js" />
-    <Content Include="resources\assets\js\ie10-viewport-bug-workaround.js" />
-    <Content Include="resources\assets\js\jquery.min.js" />
-    <Content Include="resources\assets\js\retina.min.js" />
-    <Content Include="resources\assets\js\testJS.js" />
-    <Content Include="resources\assets\js\testJS.min.js" />
-    <Content Include="resources\bootstrap\css\bootstrap-theme.css" />
-    <Content Include="resources\bootstrap\css\bootstrap-theme.min.css" />
-    <Content Include="resources\bootstrap\css\bootstrap.css" />
-    <Content Include="resources\bootstrap\css\bootstrap.min.css" />
-    <Content Include="resources\bootstrap\fonts\glyphicons-halflings-regular.svg" />
-    <Content Include="resources\bootstrap\js\bootstrap.js" />
-    <Content Include="resources\bootstrap\js\bootstrap.min.js" />
-    <Content Include="resources\style.css" />
-		<Content Include="resources\testJS.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -129,15 +103,9 @@
   <Target Name="AfterBuild">
   </Target>
 	-->
-
   <Target Name="BeforeBuild">
     <ItemGroup>
-      <EmbeddedResource Include="resources\*.*" />
-      <EmbeddedResource Include="resources\assets\img\*.*" />
-      <EmbeddedResource Include="resources\assets\js\*.*" />
-      <EmbeddedResource Include="resources\bootstrap\css\*.*" />
-      <EmbeddedResource Include="resources\bootstrap\fonts\*.*" />
-      <EmbeddedResource Include="resources\bootstrap\js\*.*" />
-   </ItemGroup>
+      <EmbeddedResource Include="resources\**\*.*"/>
+    </ItemGroup>
   </Target>
 </Project>
