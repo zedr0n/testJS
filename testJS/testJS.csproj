@@ -92,4 +92,12 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Bridge.1.8.0\build\Bridge.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Bridge.1.8.0\build\Bridge.targets'))" />
   </Target>
+  <Target Name="AfterBuild">
+    <ItemGroup>
+      <Assets Include="Bridge\www\**\*"/>
+    </ItemGroup>
+    <Copy
+        SourceFiles="@(Assets)"
+        DestinationFolder="..\Backend\resources2\%(RecursiveDir)"/>
+  </Target>
 </Project>
