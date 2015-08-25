@@ -98,6 +98,6 @@
     </ItemGroup>
     <Copy
         SourceFiles="@(Assets)"
-        DestinationFolder="..\Backend\resources2\%(RecursiveDir)"/>
+        DestinationFolder="..\Backend\resources\%(RecursiveDir)"/>
   </Target>
 </Project>
