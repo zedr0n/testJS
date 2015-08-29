@@ -11,11 +11,10 @@ namespace testJS
     public class Area
     {
         protected jQuery jquery;
-        protected Margin _margin;
-        protected OuterHeight _outerHeight;
-        protected Height _height;
-
-        protected bool cssUpdated = false;
+        protected Margin mMargin;
+        protected OuterHeight mOuterHeight;
+        protected Height mHeight;
+        protected bool mUpdateCss;
 
         // disable default constructor
         private Area() { }
@@ -24,56 +23,66 @@ namespace testJS
             jquery = jQuery.Select(selection);
 
             // create properties
-            _margin = new Margin(jquery);
-            _height = new Height(jquery);
-            _outerHeight = new OuterHeight(jquery, _height);
+            mMargin = new Margin(jquery);
+            mHeight = new Height(jquery);
+            mOuterHeight = new OuterHeight(jquery, mHeight);
 
+            updateCss = true;
         }
 
         public int margin
         {
             get
             {
-                return _margin.get();
+                return mMargin.get();
             }
             set
             {
-                _margin.set(value);
+                mMargin.set(value);
             }
         }
         public int outerHeight
         {
             get
             {
-                return _outerHeight.get();
+                return mOuterHeight.get();
             }
-            set { _outerHeight.set(value); }
+            set { mOuterHeight.set(value); }
         }
         public virtual int height
         {
             get
             {
-                return _height.get();
+                return mHeight.get();
             }
             set
             {
-                _height.set(value);
+                mHeight.set(value);
             }
         }
         public int initialHeight
         {
             get
             {
-                return _height.init;
+                return mHeight.init;
             }
         }
         public int initialOuterHeight
         {
             get
             {
-                return _outerHeight.init;
+                return mOuterHeight.init;
             }
         }
+        public virtual bool updateCss
+        {
+            get { return mUpdateCss;  }
+            set {
+                mUpdateCss = value;
+                mHeight.updateCss = value;
+            }
+        }
+
     }
     public class Header : Area
     {
@@ -83,6 +92,21 @@ namespace testJS
             base(".header")
         {
             images = new Area("img");
+            images.updateCss = updateCss;
+        }
+
+        public override bool updateCss
+        {
+            get
+            {
+                return base.updateCss;
+            }
+            set
+            {
+                base.updateCss = value;
+                if(images != null)
+                    images.updateCss = value;
+            }
         }
 
         public override int height

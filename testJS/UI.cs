@@ -17,6 +17,7 @@ namespace testJS
         public Content content = new Content();
 
         private int timeout;
+        private int maxHeight;
 
         public int height
         {
@@ -31,28 +32,57 @@ namespace testJS
             // disable scrollbars
             Document.Body.Style.Overflow = Overflow.Hidden;
 
+            var start = DateTime.Now;
+
+            var d = jQuery.Deffered( null );
+            int counter = 0;
+            // test performance
+            for (int i = 0; i < 2000; ++i  )
+            {
+                Window.SetTimeout(() =>
+                    {
+                        maxHeight = (int)(Math.Random() * Window.InnerHeight);
+                        onResize();
+                        ++counter;
+                        if(counter == 1999)
+                            d.Resolve();
+                    }
+                , 25);
+            }
+
+            d.Done(() =>
+            {
+                Console.Log("Time taken: " + (DateTime.Now - start).ToString());
+            });
+            
             // initialize resize handler
             onResize();
             jQuery.Window.Resize(() =>
                 {
                     Window.ClearTimeout(timeout);
-                    timeout = Window.SetTimeout(onResize,25);
+                    timeout = Window.SetTimeout(onResize,100);
                 });
             //Window.OnPageShow = Window.OnResize = onResize;
+            
            
         }
 
         public void onResize()
         {
+            //maxHeight = Window.InnerHeight;
+            header.updateCss = false;
             // shrink the header if not fitting into window
-            while ( height > Window.InnerHeight && header.height > 0 )
+            while ( height > maxHeight && header.height > 0 )
                 header.height -= 20;
 
             // increase the header if possible
-            while (height < Window.InnerHeight - 20 && header.height < header.initialHeight)
+            while (height < maxHeight - 20 && header.height < header.initialHeight)
                 header.height += 20;
 
-            content.height = Window.InnerHeight - header.outerHeight - footer.outerHeight;
+            header.updateCss = true;
+
+            content.updateCss = header.updateCss;
+            content.height = maxHeight - header.outerHeight - footer.outerHeight;
         }
     }
 }

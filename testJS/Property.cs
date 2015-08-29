@@ -22,10 +22,19 @@ namespace testJS
 
     public delegate void EventHandler<ChangeEventArgs>(object sender, ChangeEventArgs e);
 
-    public class Property<T>
+    public class Property<T> : ICloneable
     {
         protected jQuery jquery;
-        public bool toUpdateCSS = true;
+        protected bool mUpdateCss = true;
+
+        public bool updateCss
+        {
+            get { return mUpdateCss; }
+            set {     
+                mUpdateCss = value;
+                writeCSS();
+            }
+        }
 
         protected T value;
         public T init;
@@ -37,15 +46,20 @@ namespace testJS
             read();
             init = value;
         }
+        protected Property(Property<T> rhs)
+        {
+            value = rhs.value;
+            init = rhs.init;
+        }
+        public virtual object Clone()
+        {
+            return new Property<T>(this);
+        }
 
         public virtual void set(T value)
         {
             this.value = value;
-            if (toUpdateCSS)
-            {
-                write();
-                onCssUpdate(EventArgs.Empty);
-            }
+            writeCSS();
         }
         public virtual T get()
         {
@@ -54,6 +68,15 @@ namespace testJS
 
         // event handling
         public event EventHandler CssUpdate;
+
+        public void writeCSS()
+        {
+            if(mUpdateCss)
+            {
+                write();
+                onCssUpdate(EventArgs.Empty);
+            }
+        }
 
         protected virtual void onCssUpdate(EventArgs e)
         {
@@ -111,8 +134,15 @@ namespace testJS
     {
         protected Height() { }
         public Height(jQuery jquery) : base(jquery) { }
+        protected Height(Height rhs) : base(rhs) { }
+
+        public override object Clone()
+        {
+            return new Height(this);
+        }
 
         public event EventHandler<ChangeEventArgs<Height>> HeightChange;
+
 
         protected void onChange(ChangeEventArgs<Height> e)
         {
@@ -122,8 +152,9 @@ namespace testJS
 
         public override void set(int value)
         {
+            Height prev = (Height) this.Clone();
             base.set(value);
-            //onChange(ChangeEventArgs<Height>());
+            onChange(new ChangeEventArgs<Height>(prev,this));
         }
 
         protected override void read()
