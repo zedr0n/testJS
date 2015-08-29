@@ -18,6 +18,7 @@ namespace testJS
 
         private int timeout;
         private int maxHeight;
+        static private int HEIGHT_REDRAW = 25;
 
         public int height
         {
@@ -32,44 +33,22 @@ namespace testJS
             // disable scrollbars
             Document.Body.Style.Overflow = Overflow.Hidden;
 
-            var start = DateTime.Now;
-
-            var d = jQuery.Deffered( null );
-            int counter = 0;
-            // test performance
-            for (int i = 0; i < 2000; ++i  )
-            {
-                Window.SetTimeout(() =>
-                    {
-                        maxHeight = (int)(Math.Random() * Window.InnerHeight);
-                        onResize();
-                        ++counter;
-                        if(counter == 1999)
-                            d.Resolve();
-                    }
-                , 25);
-            }
-
-            d.Done(() =>
-            {
-                Console.Log("Time taken: " + (DateTime.Now - start).ToString());
-            });
-            
             // initialize resize handler
             onResize();
             jQuery.Window.Resize(() =>
                 {
+                    if (Math.Abs(maxHeight - Window.InnerHeight) > HEIGHT_REDRAW)
+                        onResize();
                     Window.ClearTimeout(timeout);
                     timeout = Window.SetTimeout(onResize,100);
                 });
-            //Window.OnPageShow = Window.OnResize = onResize;
             
            
         }
 
         public void onResize()
         {
-            //maxHeight = Window.InnerHeight;
+            maxHeight = Window.InnerHeight;
             header.updateCss = false;
             // shrink the header if not fitting into window
             while ( height > maxHeight && header.height > 0 )
@@ -83,6 +62,33 @@ namespace testJS
 
             content.updateCss = header.updateCss;
             content.height = maxHeight - header.outerHeight - footer.outerHeight;
+        }
+
+        // tests
+        public void testPerf()
+        {
+            var start = DateTime.Now;
+
+            var d = jQuery.Deffered(null);
+            int counter = 0;
+            // test performance
+            for (int i = 0; i < 2000; ++i)
+            {
+                Window.SetTimeout(() =>
+                {
+                    maxHeight = (int)(Math.Random() * Window.InnerHeight);
+                    onResize();
+                    ++counter;
+                    if (counter == 1999)
+                        d.Resolve();
+                }
+                , 25);
+            }
+
+            d.Done(() =>
+            {
+                Console.Log("Time taken: " + (DateTime.Now - start).ToString());
+            });
         }
     }
 }
