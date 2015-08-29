@@ -10,14 +10,10 @@ namespace testJS
 {
     public class Area
     {
-        //public int initialHeight;
-        //public int initialOuterHeight;
         protected jQuery jquery;
         protected Margin _margin;
         protected OuterHeight _outerHeight;
         protected Height _height;
-
-        protected List<Property<int>> properties;
 
         protected bool cssUpdated = false;
 
@@ -26,18 +22,12 @@ namespace testJS
         public Area(string selection)
         {
             jquery = jQuery.Select(selection);
-            //initialHeight = jquery.Height();
-            //initialOuterHeight = jquery.OuterHeight(true);
 
             // create properties
-            _margin = new Margin(jquery,this);
-            _outerHeight = new OuterHeight(jquery,this);
-            _height = new Height(jquery,this);
+            _margin = new Margin(jquery);
+            _height = new Height(jquery);
+            _outerHeight = new OuterHeight(jquery, _height);
 
-            // update properties list
-            properties.Add(_margin);
-            properties.Add(_outerHeight);
-            properties.Add(_height);
         }
 
         public int margin
@@ -67,14 +57,9 @@ namespace testJS
             }
             set
             {
-                cssUpdated = _height.set(value);
-
-                // notify properties that CSS changed
-                foreach (Property<int> prop in properties)
-                    prop.syncFromCSS = cssUpdated;
+                _height.set(value);
             }
         }
-
         public int initialHeight
         {
             get
@@ -82,7 +67,6 @@ namespace testJS
                 return _height.init;
             }
         }
-
         public int initialOuterHeight
         {
             get
