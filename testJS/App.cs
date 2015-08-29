@@ -6,26 +6,30 @@ namespace testJS
 {
     public class App
     {
+        private static UI ui = new UI();
+
         [Ready]
         public static void Main()
         {
-            //Main main = new Main();
-            //main.say("Success");
-            //main.say("Exiting");
-            // Script.Write("debugger");
-            var msg = jQuery.Select("#helloMsg");
-            msg.Val("Success");
+            //var msg = jQuery.Select("#helloMsg");
 
-            if (msg == null)
-                Console.Log("Couldn't find element");
-            else
-                Console.Log(msg.Val());
-
-            UI ui = new UI();
+            //UI ui = new UI();
 
             var helloBtn = jQuery.Select("#helloBtn");
-            helloBtn.On("click", () => Console.Log("Button clicked"));
+            //helloBtn.On("click", () => Global.Alert("Button clicked"));
+            helloBtn.On("click", () => 
+                {
+                    Console.Log("Button clicked");
+                    string msg = getUserInput();
+                    ui.content.setOutput(Script.Write<string>("jsObject.onClick(msg)"));
+                    //Global.Alert("Input : " + getUserInput());
+                });
 
+        }
+
+        public static string getUserInput()
+        {
+            return ui.content.getUserInput();
         }
     }
 }

@@ -126,6 +126,17 @@ namespace testJS
     {
         public Content() :
             base(".content") { }
+
+        public string getUserInput()
+        {
+            var msg = jquery.Find(".input-lg");
+            return msg.Val();
+        }
+
+        public void setOutput(string output)
+        {
+            jquery.Find(".input-lg").Val(output);
+        }
     }
     public class Footer : Area
     {

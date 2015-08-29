@@ -18,7 +18,7 @@ namespace testJS
 
         private int timeout;
         private int maxHeight;
-        static private int HEIGHT_REDRAW = 25;
+        static private int HEIGHT_REDRAW = 10;
 
         public int height
         {
