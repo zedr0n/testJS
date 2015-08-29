@@ -20,9 +20,9 @@ namespace testJS
             helloBtn.On("click", () => 
                 {
                     Console.Log("Button clicked");
-                    string msg = getUserInput();
-                    ui.content.setOutput(Script.Write<string>("jsObject.onClick(msg)"));
-                    //Global.Alert("Input : " + getUserInput());
+                    //string msg = getUserInput();
+                    //ui.content.setOutput(Script.Write<string>("jsObject.onClick(msg)"));
+                    ui.content.setOutput(JSObject.onClick(getUserInput()));
                 });
 
         }
