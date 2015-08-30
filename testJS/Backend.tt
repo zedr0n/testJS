@@ -1,0 +1,64 @@
+﻿<#@ template  debug="true" hostSpecific="true" #>
+<#@ output extension=".cs" #>
+<#@ Assembly Name="System.Core" #>
+<#@ Assembly Name="System.Windows.Forms" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Diagnostics" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Collections" #>
+<#@ import namespace="System.Collections.Generic" #> 
+<#@ import namespace="Microsoft.VisualStudio.TextTemplating" #>
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using Bridge;
+
+<# var projectName = "testJS";#>
+<# var gen = new BridgeGenerator(this); #>
+
+namespace <#=projectName#>
+{
+    [Ignore]
+    public static class <#=BridgeGenerator.jsObject#>
+    {
+		<# gen.generateMethod("onClick", "string","string", "message"); #>
+		<# gen.generateMethod("onClick2", "string","string", "message"); #>
+    }
+}
+
+<#+
+	public class BridgeGenerator 
+	{
+		private TextTransformation mOutput;
+
+		public BridgeGenerator(TextTransformation output)
+        {
+			mOutput = output;
+        }
+		
+		private void Write( string code)
+        {
+			mOutput.Write(code);
+        }
+
+		public static string jsObject = "jsObject";
+		public void generateMethod(string methodName, string returnType, string paramType, string paramName) 
+		{
+			mOutput.ClearIndent();
+			mOutput.PushIndent("        ");
+#>
+[Template("<#=jsObject#>.<#=methodName#>({<#=paramName#>})")]
+public static <#=returnType#> <#=methodName#> ( <#=paramType#> <#=paramName#> )
+{
+	return <#=paramName#>;
+}
+<#+
+			mOutput.ClearIndent();
+		}
+	}
+#>

@@ -68,7 +68,7 @@ namespace Backend
             //Console.WriteLine(result.ToString());
         }
 
-        private JSValue JSHandler(object sender, JavascriptMethodEventArgs args)
+        public JSValue JSHandler(object sender, JavascriptMethodEventArgs args)
         {
             string txt = args.Arguments[0];
             return txt + " has been processed";
