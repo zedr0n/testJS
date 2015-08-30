@@ -19,21 +19,75 @@ using System.Threading.Tasks;
 using Bridge;
 
 <# var projectName = "testJS";#>
-<# var gen = new BridgeGenerator(this); #>
+<# 
+	var gen = new BridgeGenerator(this); 
+	List<Param> list = new List<Param>();
+	list.Add(new Param("string","message"));
+#>
 
 namespace <#=projectName#>
 {
     [Ignore]
     public static class <#=BridgeGenerator.jsObject#>
     {
-		<# gen.generateMethod("onClick", "string","string", "message"); #>
-		<# gen.generateMethod("onClick2", "string","string", "message"); #>
+		<# gen.generateMethod("onClick", "string",list); #>
+		<# gen.generateMethod("onClick2", "string", list); #>
     }
 }
 
 <#+
+	public class Param
+    {
+		public string paramType;
+		public string paramName;
+
+		public Param(string paramType, string paramName)
+        {
+			this.paramType = paramType;
+			this.paramName = paramName;
+        }
+    }
+
+	public class ParamWriter
+	{
+		public List<Param> mList;
+
+		public ParamWriter(List<Param> list)
+        {
+			mList = list;
+        }
+
+		public string writeParams()
+        {
+			string output = "";
+			foreach (Param param in mList)
+            {
+				output += param.paramType;
+				output += " ";
+				output += param.paramName;
+				if( param != mList.Last())
+					output += ", ";
+            }
+			return output;
+        }
+
+		public string writeBridgeParams()
+        {
+			string output = "";
+			foreach (Param param in mList)
+            {
+				output += param.paramName;
+				if(param != mList.Last())
+					output += ", ";
+            }
+			return output;
+
+        }
+    }
+
 	public class BridgeGenerator 
 	{
+
 		private TextTransformation mOutput;
 
 		public BridgeGenerator(TextTransformation output)
@@ -47,15 +101,16 @@ namespace <#=projectName#>
         }
 
 		public static string jsObject = "jsObject";
-		public void generateMethod(string methodName, string returnType, string paramType, string paramName) 
+		public void generateMethod(string methodName, string returnType, List<Param> paramList) 
 		{
+			ParamWriter pWriter = new ParamWriter(paramList);
 			mOutput.ClearIndent();
 			mOutput.PushIndent("        ");
 #>
-[Template("<#=jsObject#>.<#=methodName#>({<#=paramName#>})")]
-public static <#=returnType#> <#=methodName#> ( <#=paramType#> <#=paramName#> )
+[Template("<#=jsObject#>.<#=methodName#>({<#=pWriter.writeBridgeParams()#>})")]
+public static <#=returnType#> <#=methodName#> ( <#=pWriter.writeParams()#> )
 {
-	return <#=paramName#>;
+	return "";
 }
 <#+
 			mOutput.ClearIndent();
