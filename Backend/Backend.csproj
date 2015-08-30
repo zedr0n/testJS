@@ -105,10 +105,6 @@
 	-->
   <Target Name="BeforeBuild">
     <ItemGroup>
-      <Assets Include="..\testJS\Bridge\www\**\*" />
-    </ItemGroup>
-    <Copy SourceFiles="@(Assets)" DestinationFolder="resources\%(RecursiveDir)" />
-    <ItemGroup>
       <EmbeddedResource Include="resources\**\*.*" />
     </ItemGroup>
   </Target>

@@ -104,5 +104,18 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Bridge.1.8.0\build\Bridge.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Bridge.1.8.0\build\Bridge.targets'))" />
+	</Target>
+	<Target Name="AfterBuild">
+		<GenerateScript
+      OutputPath="$(OutputPath)"
+      Configuration="$(Configuration)"
+      Assembly="@(IntermediateAssembly)"
+      AssembliesPath="$(OutputPath)"
+      ProjectPath="$(MSBuildProjectFullPath)">
+    </GenerateScript>
+    <ItemGroup>
+      <Assets Include="Bridge\www\**\*" />
+    </ItemGroup>
+		<Copy SourceFiles="@(Assets)" DestinationFolder="..\Backend\resources\%(RecursiveDir)" OverwriteReadOnlyFiles="True" />
   </Target>
 </Project>
