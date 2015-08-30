@@ -58,7 +58,6 @@ namespace Backend
         
     public class JSHandler
     {
-
         // handler stubs for Awesomium
         public JSValue onClick(object sender, JavascriptMethodEventArgs args)
         {
@@ -92,7 +91,6 @@ namespace Backend
             catch { }
             return (T)Convert.ChangeType(handler, typeof(T));
         }
-
         public T getDelegate<T>(MethodInfo methodInfo)
         {
             Delegate dlg = null;
@@ -189,8 +187,8 @@ namespace Backend
 
             foreach(MethodInfo method in jsHandler.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
-                if (jsHandler.getByName<JavascriptMethodHandler>(method.Name) != null)
-                    jsObject.Bind(jsHandler.getByName<JavascriptMethodHandler>(method.Name));
+                if (jsHandler.getDelegate<JavascriptMethodHandler>(method) != null)
+                    jsObject.Bind(jsHandler.getDelegate<JavascriptMethodHandler>(method));
             }
 
             string xml = jsHandler.writeToXML();
