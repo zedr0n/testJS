@@ -18,25 +18,125 @@ using System.Reflection;
 using Awesomium.Core;
 using Awesomium.Core.Data;
 
+using System.Xml;
+using System.Xml.Serialization;
+using System.IO;
+
 namespace Backend
 {
-    public static class JSHandler
+    public class Param
     {
-        public static JSValue onClick(object sender, JavascriptMethodEventArgs args)
+		public string paramType;
+		public string paramName;
+
+        public Param() { }
+		public Param(string paramType, string paramName)
         {
-            string txt = args.Arguments[0];
-            return txt + " has been processed";
+			this.paramType = paramType;
+			this.paramName = paramName;
+        }
+    }
+
+    public class Method
+    {
+        public string name;
+        public List<Param> parameters = new List<Param>();
+        public string returnType;
+
+        public Method() {}
+
+        public Method(MethodInfo methodInfo)
+        {
+            name = methodInfo.Name;
+            returnType = methodInfo.ReturnType.ToString();
+            foreach(ParameterInfo paramInfo in methodInfo.GetParameters())
+            {
+                parameters.Add(new Param(paramInfo.ParameterType.ToString(), paramInfo.Name));
+            }
+        }
+    }
+        
+    public class JSHandler
+    {
+
+        // handler stubs for Awesomium
+        public JSValue onClick(object sender, JavascriptMethodEventArgs args)
+        {
+            return (JSValue) onClick(args.Arguments[0]);
         }
 
-        public static T getByName<T>(string methodName)
+        public JSValue onTest(object sender, JavascriptMethodEventArgs args)
+        {
+            onTest();
+            return null;
+        }
+
+        // proper handlers
+        public string onClick(string textInput)
+        {
+            return textInput + "has been processed";
+        }
+
+        public void onTest()
+        {
+            // do nothing
+        }
+
+        public T getByName<T>(string methodName)
         {
             Delegate handler = null;
             try
             {
-                handler = Delegate.CreateDelegate(typeof(T), typeof(JSHandler), methodName);
+                handler = Delegate.CreateDelegate(typeof(T), this, methodName);
             }
             catch { }
             return (T)Convert.ChangeType(handler, typeof(T));
+        }
+
+        public T getDelegate<T>(MethodInfo methodInfo)
+        {
+            Delegate dlg = null;
+            try
+            {
+                dlg = methodInfo.CreateDelegate(typeof(T),this);
+            }
+            catch (System.Exception ex) { }
+            return (T)Convert.ChangeType(dlg, typeof(T));
+
+        }
+
+        public List<Method> methods = new List<Method>();
+
+        public JSHandler()
+        {
+            List<string> methodNames = new List<string>();
+            foreach (MethodInfo methodInfo in GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance))
+            {
+                if (getDelegate<JavascriptMethodHandler>(methodInfo) != null)
+                    methodNames.Add(methodInfo.Name);
+            }
+
+
+            foreach (MethodInfo methodInfo in GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance))
+            {
+                if (methodNames.Contains(methodInfo.Name) && getDelegate<JavascriptMethodHandler>(methodInfo) == null)
+                {
+                    Method method = new Method(methodInfo);
+                    methods.Add(method);
+                }
+            }
+        }
+
+        // XML serialisation
+        public string writeToXML()
+        {
+            XmlSerializer x = new XmlSerializer(GetType());
+            StringWriter sw = new StringWriter();
+            XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
+            ns.Add("", "");
+
+            x.Serialize(sw, this, ns);
+            return sw.ToString();
         }
     }
 
@@ -85,11 +185,15 @@ namespace Backend
             //jsObject.Bind(this.GetMemberName(x => x.onClick(null, null)), onClick);
             //jsObject.Bind(onClick);
 
-            foreach(MethodInfo method in typeof(JSHandler).GetMethods(BindingFlags.Public | BindingFlags.Static))
+            JSHandler jsHandler = new JSHandler();
+
+            foreach(MethodInfo method in jsHandler.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
-                if(JSHandler.getByName<JavascriptMethodHandler>(method.Name) != null)
-                    jsObject.Bind(JSHandler.getByName<JavascriptMethodHandler>(method.Name));
+                if (jsHandler.getByName<JavascriptMethodHandler>(method.Name) != null)
+                    jsObject.Bind(jsHandler.getByName<JavascriptMethodHandler>(method.Name));
             }
+
+            string xml = jsHandler.writeToXML();
 
             //jsObject.Bind(getByName(methodName));
             //string name = StaticReflection.GetMemberName<MainWindow>( x => x.onClick(null,null));
