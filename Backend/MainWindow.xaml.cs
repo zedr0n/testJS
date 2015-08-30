@@ -13,12 +13,33 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Diagnostics;
+using System.Reflection;
 
 using Awesomium.Core;
 using Awesomium.Core.Data;
 
 namespace Backend
 {
+    public static class JSHandler
+    {
+        public static JSValue onClick(object sender, JavascriptMethodEventArgs args)
+        {
+            string txt = args.Arguments[0];
+            return txt + " has been processed";
+        }
+
+        public static T getByName<T>(string methodName)
+        {
+            Delegate handler = null;
+            try
+            {
+                handler = Delegate.CreateDelegate(typeof(T), typeof(JSHandler), methodName);
+            }
+            catch { }
+            return (T)Convert.ChangeType(handler, typeof(T));
+        }
+    }
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -60,7 +81,19 @@ namespace Backend
             webControl.DocumentReady -= OnDocumentReady;
             JSObject jsObject = webControl.CreateGlobalJavascriptObject("jsObject");
 
-            jsObject.Bind("onClick",  JSHandler);
+            //jsObject.Bind(((JavascriptMethodHandler)onClick).Method.Name, onClick);
+            //jsObject.Bind(this.GetMemberName(x => x.onClick(null, null)), onClick);
+            //jsObject.Bind(onClick);
+
+            foreach(MethodInfo method in typeof(JSHandler).GetMethods(BindingFlags.Public | BindingFlags.Static))
+            {
+                if(JSHandler.getByName<JavascriptMethodHandler>(method.Name) != null)
+                    jsObject.Bind(JSHandler.getByName<JavascriptMethodHandler>(method.Name));
+            }
+
+            //jsObject.Bind(getByName(methodName));
+            //string name = StaticReflection.GetMemberName<MainWindow>( x => x.onClick(null,null));
+            //string name2 = this.GetMemberName(x => x.onClick(null, null));
             
             //webControl.ExecuteJavascript("myMethod()");
             //webControl.ExecuteJavascript("myMethodExpectingReturn()");
@@ -68,10 +101,7 @@ namespace Backend
             //Console.WriteLine(result.ToString());
         }
 
-        public JSValue JSHandler(object sender, JavascriptMethodEventArgs args)
-        {
-            string txt = args.Arguments[0];
-            return txt + " has been processed";
-        }
+
+
     }
 }
