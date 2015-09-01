@@ -9,6 +9,9 @@
 <#@ import namespace="System.Collections" #>
 <#@ import namespace="System.Collections.Generic" #> 
 <#@ import namespace="Microsoft.VisualStudio.TextTemplating" #>
+<#@ assembly name="System.Xml" #>
+<#@ import namespace="System.Xml" #>
+<#@ import namespace="System.IO" #>
 
 using System;
 using System.Collections.Generic;
@@ -20,22 +23,35 @@ using Bridge;
 
 <# var projectName = "testJS";#>
 <# 
-	var gen = new BridgeGenerator(this); 
-	List<Param> list = new List<Param>();
-	list.Add(new Param("string","message"));
+	XMLReader xmlReader = new XMLReader("D:\\dev\\testJS\\testJS\\methods.xml");
+	xmlReader.readMethods();
+
+	string jsObject = "jsObject";
 #>
 
 namespace <#=projectName#>
 {
     [Ignore]
-    public static class <#=BridgeGenerator.jsObject#>
+    public static class <#=jsObject#>
     {
-		<# gen.generateMethod("onClick", "string",list); #>
-		<# gen.generateMethod("onClick2", "string", list); #>
-    }
+<#
+	foreach(JSMethod method in xmlReader.methods)
+    {
+#>
+		[Template("<#=jsObject#>.<#=method.name#>(<# foreach(Param param in method.parameters) { #>{ <#=param.paramName#><# if(param != method.parameters.Last() )#> , <##> }<# }#>)")]
+		public static <#=method.returnType#> <#=method.name#>(<# foreach(Param param in method.parameters) { #> <#=param.paramType#> <#=param.paramName#> <# if(param != method.parameters.Last() )#> ,<# }#>)
+		{
+<# if (!method.returnType.Contains("void")) #>
+			 return null;
+<##>
+		}
+<#
+	}
+#>	}
 }
 
 <#+
+
 	public class Param
     {
 		public string paramType;
@@ -48,72 +64,57 @@ namespace <#=projectName#>
         }
     }
 
-	public class ParamWriter
-	{
-		public List<Param> mList;
+	public class JSMethod
+    {
+        public string name;
+        public List<Param> parameters = new List<Param>();
+        public string returnType;
 
-		public ParamWriter(List<Param> list)
-        {
-			mList = list;
-        }
-
-		public string writeParams()
-        {
-			string output = "";
-			foreach (Param param in mList)
-            {
-				output += param.paramType;
-				output += " ";
-				output += param.paramName;
-				if( param != mList.Last())
-					output += ", ";
-            }
-			return output;
-        }
-
-		public string writeBridgeParams()
-        {
-			string output = "";
-			foreach (Param param in mList)
-            {
-				output += param.paramName;
-				if(param != mList.Last())
-					output += ", ";
-            }
-			return output;
-
-        }
+        public JSMethod() {}
     }
 
-	public class BridgeGenerator 
-	{
 
-		private TextTransformation mOutput;
+	public class XMLReader
+    {
+		private string xmlFilename;
+		XmlDocument doc = new XmlDocument();
+		public List<JSMethod> methods = new List<JSMethod>();
 
-		public BridgeGenerator(TextTransformation output)
+		private XMLReader() {}
+		public XMLReader(string xmlFilename)
         {
-			mOutput = output;
+			this.xmlFilename = xmlFilename;
+
+			string absPath = Path.GetFullPath(xmlFilename);
+			doc.Load(absPath);
+
+        }
+
+		public JSMethod readMethod()
+        {
+			JSMethod method = new JSMethod();
+			return method;
+        }
+
+		public void readMethods()
+        {
+			foreach (XmlNode node in doc.SelectNodes("//methods/Method"))
+			{
+				JSMethod method = new JSMethod();
+				method.name = node.SelectSingleNode("./name").InnerText;
+
+				foreach(XmlNode paramNode in node.SelectSingleNode("./parameters"))
+                {
+					Param param = new Param(paramNode.SelectSingleNode("./paramType").InnerText,paramNode.SelectSingleNode("./paramName").InnerText);
+					method.parameters.Add(param);
+                }
+
+				method.returnType = node.SelectSingleNode("./returnType").InnerText;
+
+				methods.Add(method);
+
+			}
         }
 		
-		private void Write( string code)
-        {
-			mOutput.Write(code);
-        }
-
-		public static string jsObject = "jsObject";
-		public void generateMethod(string methodName, string returnType, List<Param> paramList) 
-		{
-			ParamWriter pWriter = new ParamWriter(paramList);
-			mOutput.ClearIndent();
-			mOutput.PushIndent("        ");
-#>
-[Template("<#=jsObject#>.<#=methodName#>({<#=pWriter.writeBridgeParams()#>})")]
-public static <#=returnType#> <#=methodName#> ( <#=pWriter.writeParams()#> )
-{
-	return "";
-}
-<#+
-			mOutput.ClearIndent();
-		}
-	}
+    }
 #>
