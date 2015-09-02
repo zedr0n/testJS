@@ -12,6 +12,14 @@ using Backend;
 
 namespace xmlGen
 {
+    public static class Extensions
+    {
+        public static void test(this object obj)
+        {
+
+        }
+    }
+    
     class Program
     {
         private static string writeToXML(object obj)
