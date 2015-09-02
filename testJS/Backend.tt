@@ -23,7 +23,7 @@ using Bridge;
 
 <# var projectName = "testJS";#>
 <# 
-	XMLReader xmlReader = new XMLReader("D:\\dev\\testJS\\testJS\\methods.xml");
+	XMLReader xmlReader = new XMLReader(Host.ResolvePath("methods.xml"));
 	xmlReader.readMethods();
 
 	string jsObject = "jsObject";
@@ -76,17 +76,17 @@ namespace <#=projectName#>
 
 	public class XMLReader
     {
-		private string xmlFilename;
+		private string xmlPath;
 		XmlDocument doc = new XmlDocument();
 		public List<JSMethod> methods = new List<JSMethod>();
 
 		private XMLReader() {}
-		public XMLReader(string xmlFilename)
+		public XMLReader(string xmlPath)
         {
-			this.xmlFilename = xmlFilename;
+			this.xmlPath = xmlPath;
 
-			string absPath = Path.GetFullPath(xmlFilename);
-			doc.Load(absPath);
+			if(xmlPath != null)
+				doc.Load(xmlPath);
 
         }
 

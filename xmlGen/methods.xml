@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="utf-16"?><JSHandler><methods><Method><name>onClick</name><parameters><Param><paramType>System.String</paramType><paramName>textInput</paramName></Param></parameters><returnType>System.String</returnType></Method><Method><name>onTest</name><parameters /><returnType>System.Void</returnType></Method></methods></JSHandler>

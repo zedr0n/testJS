@@ -11,7 +11,7 @@
     <AssemblyName>testJS</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>1f11e439</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>cd4a7bc8</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -95,6 +96,7 @@
     <None Include="Backend.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Backend.cs</LastGenOutput>
+      <TransformOnBuild>False</TransformOnBuild>
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -104,18 +106,18 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Bridge.1.8.0\build\Bridge.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Bridge.1.8.0\build\Bridge.targets'))" />
-	</Target>
-	<Target Name="AfterBuild">
-		<GenerateScript
-      OutputPath="$(OutputPath)"
-      Configuration="$(Configuration)"
-      Assembly="@(IntermediateAssembly)"
-      AssembliesPath="$(OutputPath)"
-      ProjectPath="$(MSBuildProjectFullPath)">
+    <Error Condition="!Exists('..\packages\Clarius.TransformOnBuild.1.1.12\build\Clarius.TransformOnBuild.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Clarius.TransformOnBuild.1.1.12\build\Clarius.TransformOnBuild.targets'))" />
+  </Target>
+  <Target Name="AfterBuild">
+    <GenerateScript OutputPath="$(OutputPath)" Configuration="$(Configuration)" Assembly="@(IntermediateAssembly)" AssembliesPath="$(OutputPath)" ProjectPath="$(MSBuildProjectFullPath)">
     </GenerateScript>
     <ItemGroup>
       <Assets Include="Bridge\www\**\*" />
     </ItemGroup>
-		<Copy SourceFiles="@(Assets)" DestinationFolder="..\Backend\resources\%(RecursiveDir)" OverwriteReadOnlyFiles="True" />
+    <Copy SourceFiles="@(Assets)" DestinationFolder="..\Backend\resources\%(RecursiveDir)" OverwriteReadOnlyFiles="True" />
   </Target>
+  <PropertyGroup>
+    <PreBuildEvent>$(SolutionDir)\xmlGen\bin\Debug\xmlGen.exe $(ProjectDir)</PreBuildEvent>
+  </PropertyGroup>
+  <Import Project="..\packages\Clarius.TransformOnBuild.1.1.12\build\Clarius.TransformOnBuild.targets" Condition="Exists('..\packages\Clarius.TransformOnBuild.1.1.12\build\Clarius.TransformOnBuild.targets')" />
 </Project>
