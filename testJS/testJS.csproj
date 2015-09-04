@@ -119,7 +119,7 @@
     <GenerateScript OutputPath="$(OutputPath)" Configuration="$(Configuration)" Assembly="@(IntermediateAssembly)" AssembliesPath="$(OutputPath)" ProjectPath="$(MSBuildProjectFullPath)">
     </GenerateScript>
     <ItemGroup>
-      <Assets Include="Bridge\www\**\*" />
+      <Assets Include="..\html\**\*" />
     </ItemGroup>
     <Copy SourceFiles="@(Assets)" DestinationFolder="..\Backend\resources\%(RecursiveDir)" OverwriteReadOnlyFiles="True" />
   </Target>

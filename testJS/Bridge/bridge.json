@@ -1,5 +1,5 @@
 {
-    "output": "Bridge/www/assets/js"
+    "output": "../html/assets/js"
     
     // Uncomment to add TypeScript Definition file (.d.ts) generation to your project.
     // , "generateTypeScript": true
