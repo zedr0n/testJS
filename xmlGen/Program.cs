@@ -7,24 +7,57 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
 using System.IO;
+using System.Reflection;
 
 using Backend;
 
+using Awesomium.Core;
+
 namespace xmlGen
 {
-    public static class Extensions
+    public class Param
     {
-        public static void test(this object obj)
-        {
+        public string paramType;
+        public string paramName;
 
+        public Param() { }
+        public Param(string paramType, string paramName)
+        {
+            this.paramType = paramType;
+            this.paramName = paramName;
         }
     }
-    
-    class Program
+    public class Method
     {
-        private static string writeToXML(object obj)
+        public string name;
+        public List<Param> parameters = new List<Param>();
+        public string returnType;
+
+        public Method() { }
+
+        public Method(MethodInfo methodInfo)
         {
-            XmlSerializer x = new XmlSerializer(obj.GetType());
+            name = methodInfo.Name;
+            returnType = methodInfo.ReturnType.Name.ToLower();
+            foreach (ParameterInfo paramInfo in methodInfo.GetParameters())
+            {
+                parameters.Add(new Param(paramInfo.ParameterType.Name.ToLower(), paramInfo.Name));
+            }
+        }
+    }
+    public class jsObject
+    {
+        public List<Method> methods = new List<Method>();
+
+        public jsObject() { }
+        public jsObject(JSHandler jsHandler)
+        {
+            methods = jsHandler.initMethods();
+        }
+
+        public string writeToXML()
+        {
+            XmlSerializer x = new XmlSerializer(GetType());
             StringWriter sw = new StringWriter();
             XmlWriter xw = XmlWriter.Create(sw, new XmlWriterSettings
             {
@@ -33,9 +66,37 @@ namespace xmlGen
             XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
             ns.Add("", "");
 
-            x.Serialize(xw, obj, ns);
+            x.Serialize(xw, this, ns);
             return sw.ToString();
         }
+    }
+    public static class Extensions
+    {
+        public static List<Method> initMethods(this JSHandler jsHandler)
+        {
+            List<string> methodNames = new List<string>();
+            foreach (MethodInfo methodInfo in jsHandler.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance))
+            {
+                if (jsHandler.getDelegate<JavascriptMethodHandler>(methodInfo) != null)
+                    methodNames.Add(methodInfo.Name);
+            }
+
+            List<Method> methods = new List<Method>();
+            foreach (MethodInfo methodInfo in jsHandler.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance))
+            {
+                if (methodNames.Contains(methodInfo.Name) && jsHandler.getDelegate<JavascriptMethodHandler>(methodInfo) == null)
+                {
+                    Method method = new Method(methodInfo);
+                    methods.Add(method);
+                }
+            }
+            return methods;
+
+        }
+    }
+    
+    class Program
+    {
 
         static void Main(string[] args)
         {
@@ -45,9 +106,7 @@ namespace xmlGen
                 xmlPath = args[0] + "\\"; 
             }
 
-            JSHandler jsHandler = new JSHandler();
-
-            string xml = writeToXML(jsHandler);
+            string xml = (new jsObject(new JSHandler())).writeToXML();
 
             StreamWriter file = new StreamWriter(xmlPath + "methods.xml");
             file.Write(xml);

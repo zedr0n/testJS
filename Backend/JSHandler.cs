@@ -14,38 +14,6 @@ using System.Reflection;
 
 namespace Backend
 {
-    public class Param
-    {
-        public string paramType;
-        public string paramName;
-
-        public Param() { }
-        public Param(string paramType, string paramName)
-        {
-            this.paramType = paramType;
-            this.paramName = paramName;
-        }
-    }
-
-    public class Method
-    {
-        public string name;
-        public List<Param> parameters = new List<Param>();
-        public string returnType;
-
-        public Method() { }
-
-        public Method(MethodInfo methodInfo)
-        {
-            name = methodInfo.Name;
-            returnType = methodInfo.ReturnType.Name.ToLower();
-            foreach (ParameterInfo paramInfo in methodInfo.GetParameters())
-            {
-                parameters.Add(new Param(paramInfo.ParameterType.Name.ToLower(), paramInfo.Name));
-            }
-        }
-    }
-
     public class JSHandler
     {
         // handler stubs for Awesomium
@@ -90,30 +58,9 @@ namespace Backend
             }
             catch (System.Exception ex) { }
             return (T)Convert.ChangeType(dlg, typeof(T));
-
         }
 
-        public List<Method> methods = new List<Method>();
-
-        public JSHandler()
-        {
-            List<string> methodNames = new List<string>();
-            foreach (MethodInfo methodInfo in GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance))
-            {
-                if (getDelegate<JavascriptMethodHandler>(methodInfo) != null)
-                    methodNames.Add(methodInfo.Name);
-            }
-
-
-            foreach (MethodInfo methodInfo in GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance))
-            {
-                if (methodNames.Contains(methodInfo.Name) && getDelegate<JavascriptMethodHandler>(methodInfo) == null)
-                {
-                    Method method = new Method(methodInfo);
-                    methods.Add(method);
-                }
-            }
-        }
+        public JSHandler() { }
     }
 
 }
