@@ -39,15 +39,9 @@ namespace <#=projectName#>
     {
 #>
 		[Template("<#=jsObject#>.<#=method.name#>(<# foreach(Param param in method.parameters) { #>{<#=param.paramName#><# if(param != method.parameters.Last() )#> , <##>}<# }#>)")]
-		public static <#=method.returnType#> <#=method.name#>(<# foreach(Param param in method.parameters) { #> <#=param.paramType#> <#=param.paramName#> <# if(param != method.parameters.Last() )#> ,<# }#>)
-		{
-<# if (!method.returnType.Contains("void")) #>
-			 return null;
-<##>
-		}
-<#
+		public static extern <#=method.returnType#> <#=method.name#>(<# foreach(Param param in method.parameters) { #> <#=param.paramType#> <#=param.paramName#> <# if(param != method.parameters.Last() )#> ,<# }#>);
+<#	} #>
 	}
-#>	}
 }
 
 <#+

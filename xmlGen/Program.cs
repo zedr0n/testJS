@@ -52,7 +52,7 @@ namespace xmlGen
         public jsObject() { }
         public jsObject(JSHandler jsHandler)
         {
-            methods = jsHandler.initMethods();
+            methods = jsHandler.parseMethods();
         }
 
         public string writeToXML()
@@ -72,7 +72,7 @@ namespace xmlGen
     }
     public static class Extensions
     {
-        public static List<Method> initMethods(this JSHandler jsHandler)
+        public static List<Method> parseMethods(this JSHandler jsHandler)
         {
             List<string> methodNames = new List<string>();
             foreach (MethodInfo methodInfo in jsHandler.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance))

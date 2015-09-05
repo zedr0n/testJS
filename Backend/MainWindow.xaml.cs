@@ -64,30 +64,7 @@ namespace Backend
         private void OnDocumentReady(object sender, UrlEventArgs urlEventArgs)
         {
             webControl.DocumentReady -= OnDocumentReady;
-            JSObject jsObject = webControl.CreateGlobalJavascriptObject("jsObject");
-
-            //jsObject.Bind(((JavascriptMethodHandler)onClick).Method.Name, onClick);
-            //jsObject.Bind(this.GetMemberName(x => x.onClick(null, null)), onClick);
-            //jsObject.Bind(onClick);
-
-            JSHandler jsHandler = new JSHandler();
-
-            foreach(MethodInfo method in jsHandler.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance))
-            {
-                if (jsHandler.getDelegate<JavascriptMethodHandler>(method) != null)
-                    jsObject.Bind(jsHandler.getDelegate<JavascriptMethodHandler>(method));
-            }
-
-            //string xml = jsHandler.writeToXML();
-
-            //jsObject.Bind(getByName(methodName));
-            //string name = StaticReflection.GetMemberName<MainWindow>( x => x.onClick(null,null));
-            //string name2 = this.GetMemberName(x => x.onClick(null, null));
-            
-            //webControl.ExecuteJavascript("myMethod()");
-            //webControl.ExecuteJavascript("myMethodExpectingReturn()");
-            //var result = webView.ExecuteJavascriptWithResult("myMethodProvidingReturn('foo')");
-            //Console.WriteLine(result.ToString());
+            JSHandler jsHandler = new JSHandler(webControl);
         }
 
 

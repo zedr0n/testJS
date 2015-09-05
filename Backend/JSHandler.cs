@@ -6,38 +6,16 @@ using System.Threading.Tasks;
 
 using Awesomium.Core;
 using Awesomium.Core.Data;
+using Awesomium.Windows.Controls;
 
-using System.Xml;
-using System.Xml.Serialization;
-using System.IO;
 using System.Reflection;
 
 namespace Backend
 {
-    public class JSHandler
+    public class JSHandlerBase
     {
-        // handler stubs for Awesomium
-        public JSValue onClick(object sender, JavascriptMethodEventArgs args)
-        {
-            return (JSValue)onClick(args.Arguments[0]);
-        }
-
-        public JSValue onTest(object sender, JavascriptMethodEventArgs args)
-        {
-            onTest();
-            return null;
-        }
-
-        // proper handlers
-        public string onClick(string textInput)
-        {
-            return textInput + "has been processed";
-        }
-
-        public void onTest()
-        {
-            // do nothing
-        }
+        JSObject jsObject = null;
+        public static string name = "jsObject";
 
         public T getByName<T>(string methodName)
         {
@@ -60,7 +38,47 @@ namespace Backend
             return (T)Convert.ChangeType(dlg, typeof(T));
         }
 
+        public void bind()
+        {
+            foreach (MethodInfo method in GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance))
+            {
+                if (getDelegate<JavascriptMethodHandler>(method) != null)
+                    jsObject.Bind(getDelegate<JavascriptMethodHandler>(method));
+            }
+        }
+
+        public JSHandlerBase() { }
+        public JSHandlerBase(WebControl webControl)
+        {
+            jsObject = webControl.CreateGlobalJavascriptObject(name);
+            bind();
+        }
+    }
+    public class JSHandler : JSHandlerBase
+    {
+        // handler stubs for Awesomium
+        public JSValue onClick(object sender, JavascriptMethodEventArgs args)
+        {
+            return (JSValue)onClick(args.Arguments[0]);
+        }
+        public JSValue onTest(object sender, JavascriptMethodEventArgs args)
+        {
+            onTest();
+            return null;
+        }
+
+        // proper handlers
+        public string onClick(string textInput)
+        {
+            return "Submitted: " + textInput;
+        }
+        public void onTest()
+        {
+            // do nothing
+        }
+
         public JSHandler() { }
+        public JSHandler(WebControl webControl) : base(webControl) { }
     }
 
 }

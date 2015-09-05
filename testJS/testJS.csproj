@@ -48,22 +48,6 @@
     <Content Include="App_Readme\Bridge.NET\README.Bootstrap.txt" />
     <Content Include="App_Readme\Bridge.NET\README.jQuery.txt" />
     <Content Include="App_Readme\Bridge.NET\README.txt" />
-    <Content Include="Bridge\output\readme.txt" />
-    <Content Include="Bridge\www\assets\js\holder.js" />
-    <Content Include="Bridge\www\assets\js\holder.min.js" />
-    <Content Include="Bridge\www\assets\js\ie10-viewport-bug-workaround.js" />
-    <Content Include="Bridge\www\assets\js\jquery.min.js" />
-    <Content Include="Bridge\www\assets\js\retina.min.js" />
-    <Content Include="Bridge\www\bootstrap\css\bootstrap-theme.css" />
-    <Content Include="Bridge\www\bootstrap\css\bootstrap-theme.min.css" />
-    <Content Include="Bridge\www\bootstrap\css\bootstrap.css" />
-    <Content Include="Bridge\www\bootstrap\css\bootstrap.min.css" />
-    <Content Include="Bridge\www\bootstrap\fonts\glyphicons-halflings-regular.svg" />
-    <Content Include="Bridge\www\bootstrap\js\bootstrap.js" />
-    <Content Include="Bridge\www\bootstrap\js\bootstrap.min.js" />
-    <Content Include="Bridge\www\demo.html" />
-    <Content Include="Bridge\www\style.css" />
-    <Content Include="Bridge\www\testJS.html" />
     <Content Include="methods.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -88,11 +72,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Bridge\bridge.json" />
-    <None Include="Bridge\www\bootstrap\css\bootstrap.css.map" />
-    <None Include="Bridge\www\bootstrap\fonts\glyphicons-halflings-regular.eot" />
-    <None Include="Bridge\www\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
-    <None Include="Bridge\www\bootstrap\fonts\glyphicons-halflings-regular.woff" />
-    <None Include="Bridge\www\pinegrow.json" />
     <None Include="packages.config" />
     <None Include="Backend.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -124,7 +103,7 @@
     <Copy SourceFiles="@(Assets)" DestinationFolder="..\Backend\resources\%(RecursiveDir)" OverwriteReadOnlyFiles="True" />
   </Target>
   <Target Name="BeforeBuild">
-    <Exec Command="$(SolutionDir)\xmlGen\bin\Debug\xmlGen.exe $(ProjectDir)"/>
+    <Exec Command="$(SolutionDir)\xmlGen\bin\Debug\xmlGen.exe $(ProjectDir)" />
   </Target>
   <Import Project="..\packages\Clarius.TransformOnBuild.1.1.12\build\Clarius.TransformOnBuild.targets" Condition="Exists('..\packages\Clarius.TransformOnBuild.1.1.12\build\Clarius.TransformOnBuild.targets')" />
 </Project>
