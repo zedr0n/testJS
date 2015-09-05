@@ -16,6 +16,16 @@ namespace testJS
         public Footer footer = new Footer();
         public Content content = new Content();
 
+        public string input
+        {
+            get { return content.getUserInput(); }
+        }
+
+        public string output
+        {
+            set { content.setOutput(value); }
+        }
+
         private int timeout;
         private int maxHeight;
         static private int HEIGHT_REDRAW = 10;

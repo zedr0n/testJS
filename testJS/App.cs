@@ -22,14 +22,11 @@ namespace testJS
                     Console.Log("Button clicked");
                     //string msg = getUserInput();
                     //ui.content.setOutput(Script.Write<string>("jsObject.onClick(msg)"));
-                    ui.content.setOutput(jsObject.onClick(getUserInput()));
+                    ui.output = jsObject.onClick(ui.input);
                 });
 
         }
 
-        public static string getUserInput()
-        {
-            return ui.content.getUserInput();
-        }
+
     }
 }
