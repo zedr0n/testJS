@@ -61,6 +61,7 @@ namespace Backend
             webControl.DocumentReady -= OnDocumentReady;
             JSHandler jsHandler = new JSHandler();
             jsHandler.bind(webControl);
+
         }
     }
 }

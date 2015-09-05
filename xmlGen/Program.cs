@@ -35,14 +35,19 @@ namespace xmlGen
 
         public Method() { }
 
-        public Method(MethodInfo methodInfo)
+        public Method(MethodInfo methodInfo) : this(methodInfo.Name,methodInfo)
         {
-            name = methodInfo.Name;
+        }
+
+        public Method(string name, MethodInfo methodInfo)
+        {
+            this.name = name;
             returnType = methodInfo.ReturnType.Name.ToLower();
             foreach (ParameterInfo paramInfo in methodInfo.GetParameters())
             {
                 parameters.Add(new Param(paramInfo.ParameterType.Name.ToLower(), paramInfo.Name));
             }
+
         }
     }
     public class jsObject
@@ -53,6 +58,10 @@ namespace xmlGen
         public jsObject(JSHandler jsHandler)
         {
             methods = jsHandler.parseMethods();
+            foreach(JSMethodHandler method in jsHandler.handlers)
+            {
+                methods.Add(new Method(method.name,method.methodInfo));
+            }
         }
 
         public string writeToXML()
