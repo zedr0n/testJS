@@ -17,6 +17,8 @@ namespace Backend
         JSObject jsObject = null;
         public static string name = "jsObject";
 
+        public List<JavascriptMethodHandler> handlers = new List<JavascriptMethodHandler>();
+
         public T getByName<T>(string methodName)
         {
             Delegate handler = null;
@@ -38,21 +40,29 @@ namespace Backend
             return (T)Convert.ChangeType(dlg, typeof(T));
         }
 
-        public void bind()
+        public void add(JavascriptMethodHandler handler)
         {
+            if (jsObject == null)
+                return;
+        }
+
+        public void bind(WebControl webControl)
+        {
+            if(jsObject == null)
+                jsObject = webControl.CreateGlobalJavascriptObject(name);
             foreach (MethodInfo method in GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
                 if (getDelegate<JavascriptMethodHandler>(method) != null)
-                    jsObject.Bind(getDelegate<JavascriptMethodHandler>(method));
+                    handlers.Add(getDelegate<JavascriptMethodHandler>(method));
+            }
+
+            foreach(JavascriptMethodHandler handler in handlers)
+            {
+                jsObject.Bind(handler);
             }
         }
 
         public JSHandlerBase() { }
-        public JSHandlerBase(WebControl webControl)
-        {
-            jsObject = webControl.CreateGlobalJavascriptObject(name);
-            bind();
-        }
     }
     public class JSHandler : JSHandlerBase
     {
@@ -76,9 +86,6 @@ namespace Backend
         {
             // do nothing
         }
-
-        public JSHandler() { }
-        public JSHandler(WebControl webControl) : base(webControl) { }
     }
 
 }

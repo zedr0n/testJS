@@ -18,10 +18,6 @@ using System.Reflection;
 using Awesomium.Core;
 using Awesomium.Core.Data;
 
-using System.Xml;
-using System.Xml.Serialization;
-using System.IO;
-
 namespace Backend
 {
 
@@ -60,14 +56,11 @@ namespace Backend
         {
             Debug.Print("{0} at {1}: {2} at '{3}'", e.EventName, e.LineNumber, e.Message, e.Source);
         }
-
         private void OnDocumentReady(object sender, UrlEventArgs urlEventArgs)
         {
             webControl.DocumentReady -= OnDocumentReady;
-            JSHandler jsHandler = new JSHandler(webControl);
+            JSHandler jsHandler = new JSHandler();
+            jsHandler.bind(webControl);
         }
-
-
-
     }
 }
