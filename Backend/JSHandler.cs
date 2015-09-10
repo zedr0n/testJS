@@ -164,7 +164,6 @@ namespace Backend
 
         public JSHandler()
         {
-            //add(new JSMethodHandler((Func<string,string>)onClick));
             add(new JSMethodHandler("onTest2", (Func<double, double,double>)((x,y) => x * y)));
         }
     }

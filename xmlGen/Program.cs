@@ -50,6 +50,7 @@ namespace xmlGen
 
         }
     }
+
     public class jsObject
     {
         public List<Method> methods = new List<Method>();
@@ -107,6 +108,11 @@ namespace xmlGen
     class Program
     {
 
+        public static string getXML()
+        {
+            return (new jsObject(new JSHandler())).writeToXML();
+        }
+
         static void Main(string[] args)
         {
             string xmlPath = "";
@@ -115,10 +121,8 @@ namespace xmlGen
                 xmlPath = args[0] + "\\"; 
             }
 
-            string xml = (new jsObject(new JSHandler())).writeToXML();
-
             StreamWriter file = new StreamWriter(xmlPath + "methods.xml");
-            file.Write(xml);
+            file.Write(getXML());
             file.Close();
         }
     }
