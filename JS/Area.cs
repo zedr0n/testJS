@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using Bridge.jQuery2;
 
-namespace testJS
+namespace JS
 {
     public class Area
     {

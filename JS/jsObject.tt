@@ -1,5 +1,6 @@
 ﻿<#@ template  debug="true" hostSpecific="true" #>
 <#@ output extension=".cs" #>
+<#@ assembly name="EnvDTE" #>
 <#@ Assembly Name="System.Core" #>
 <#@ Assembly Name="System.Windows.Forms" #>
 <#@ import namespace="System" #>
@@ -21,7 +22,7 @@ using System.Threading.Tasks;
 
 using Bridge;
 
-<# var projectName = "testJS";#>
+<# string fileNamespace="JS";#>
 <# 
 	XMLReader xmlReader = new XMLReader(Host.ResolvePath("methods.xml"));
 	xmlReader.readMethods();
@@ -29,7 +30,7 @@ using Bridge;
 	string jsObject = "jsObject";
 #>
 
-namespace <#=projectName#>
+namespace <#=fileNamespace#>
 {
     [Ignore]
     public static class <#=jsObject#>

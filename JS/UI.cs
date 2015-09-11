@@ -8,7 +8,7 @@ using Bridge;
 using Bridge.Html5;
 using Bridge.jQuery2;
 
-namespace testJS
+namespace JS
 {
     public class UI
     {

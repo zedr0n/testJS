@@ -7,8 +7,8 @@
     <ProjectGuid>{3A3063BA-BC2E-4A91-B893-5713D1D16BC6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>testJS</RootNamespace>
-    <AssemblyName>testJS</AssemblyName>
+    <RootNamespace>JS</RootNamespace>
+    <AssemblyName>JS</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>cd4a7bc8</NuGetPackageImportStamp>
@@ -36,10 +36,10 @@
     <Compile Include="Area.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Property.cs" />
-    <Compile Include="Backend.cs">
+    <Compile Include="jsObject.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Backend.tt</DependentUpon>
+      <DependentUpon>jsObject.tt</DependentUpon>
     </Compile>
     <Compile Include="UI.cs" />
   </ItemGroup>
@@ -73,9 +73,9 @@
   <ItemGroup>
     <None Include="Bridge\bridge.json" />
     <None Include="packages.config" />
-    <None Include="Backend.tt">
+    <None Include="jsObject.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Backend.cs</LastGenOutput>
+      <LastGenOutput>jsObject.cs</LastGenOutput>
       <TransformOnBuild>False</TransformOnBuild>
     </None>
   </ItemGroup>
