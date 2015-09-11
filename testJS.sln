@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JS", "testJS\JS.csproj", "{3A3063BA-BC2E-4A91-B893-5713D1D16BC6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JS", "JS\JS.csproj", "{3A3063BA-BC2E-4A91-B893-5713D1D16BC6}"
 	ProjectSection(ProjectDependencies) = postProject
 		{54025206-C4A4-481F-8419-30DEC72D12E9} = {54025206-C4A4-481F-8419-30DEC72D12E9}
 	EndProjectSection
