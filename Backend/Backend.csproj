@@ -55,7 +55,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="JSHandler.cs" />
     <Compile Include="StaticReflection.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -102,6 +101,12 @@
       <Link>resources\testJS.html</Link>
     </Content>
     <Content Include="resources\testJS.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\JSHandlers\JSHandlers.csproj">
+      <Project>{ee2c1fe1-7a20-4927-b924-51218d331a2a}</Project>
+      <Name>JSHandlers</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

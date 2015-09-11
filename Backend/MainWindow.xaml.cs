@@ -18,6 +18,8 @@ using System.Reflection;
 using Awesomium.Core;
 using Awesomium.Core.Data;
 
+using JSHandlers;
+
 namespace Backend
 {
 
@@ -59,7 +61,7 @@ namespace Backend
         private void OnDocumentReady(object sender, UrlEventArgs urlEventArgs)
         {
             webControl.DocumentReady -= OnDocumentReady;
-            JSHandler jsHandler = new JSHandler();
+            ButtonHandler jsHandler = new ButtonHandler();
             jsHandler.bind(webControl);
 
         }

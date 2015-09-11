@@ -9,9 +9,8 @@ using System.Xml.Serialization;
 using System.IO;
 using System.Reflection;
 
-using Backend;
-
 using Awesomium.Core;
+using JSHandlers;
 
 namespace xmlGen
 {
@@ -56,7 +55,7 @@ namespace xmlGen
         public List<Method> methods = new List<Method>();
 
         public jsObject() { }
-        public jsObject(JSHandler jsHandler)
+        public jsObject(ButtonHandler jsHandler)
         {
             methods = jsHandler.parseMethods();
             foreach(JSMethodHandler method in jsHandler.handlers)
@@ -82,7 +81,7 @@ namespace xmlGen
     }
     public static class Extensions
     {
-        public static List<Method> parseMethods(this JSHandler jsHandler)
+        public static List<Method> parseMethods(this ButtonHandler jsHandler)
         {
             List<string> methodNames = new List<string>();
             foreach (MethodInfo methodInfo in jsHandler.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance))
@@ -110,7 +109,7 @@ namespace xmlGen
 
         public static string getXML()
         {
-            return (new jsObject(new JSHandler())).writeToXML();
+            return (new jsObject(new ButtonHandler())).writeToXML();
         }
 
         static void Main(string[] args)
