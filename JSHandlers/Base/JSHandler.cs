@@ -8,6 +8,8 @@ using System.Reflection;
 using Awesomium.Core;
 using Awesomium.Windows.Controls;
 
+using ClassDelegates;
+
 namespace JSHandlers
 {
     public class JSHandler

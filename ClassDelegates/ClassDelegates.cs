@@ -6,12 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
 
-
-namespace JSHandlers
+namespace ClassDelegates
 {
-    public static class Methods
+    public static class Extensions
     {
-        public static T getByName<T>(this object obj, string methodName)
+        public static T getDelegate<T>(this object obj, string methodName)
         {
             Delegate handler = null;
             try

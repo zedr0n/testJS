@@ -41,6 +41,11 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "html", "http://localhost:52
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JSHandlers", "JSHandlers\JSHandlers.csproj", "{EE2C1FE1-7A20-4927-B924-51218D331A2A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{999F1D81-701A-4219-A78D-6AEAD9C936DB} = {999F1D81-701A-4219-A78D-6AEAD9C936DB}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassDelegates", "ClassDelegates\ClassDelegates.csproj", "{999F1D81-701A-4219-A78D-6AEAD9C936DB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -68,6 +73,10 @@ Global
 		{EE2C1FE1-7A20-4927-B924-51218D331A2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE2C1FE1-7A20-4927-B924-51218D331A2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EE2C1FE1-7A20-4927-B924-51218D331A2A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{999F1D81-701A-4219-A78D-6AEAD9C936DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{999F1D81-701A-4219-A78D-6AEAD9C936DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{999F1D81-701A-4219-A78D-6AEAD9C936DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{999F1D81-701A-4219-A78D-6AEAD9C936DB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

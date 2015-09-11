@@ -55,13 +55,11 @@ namespace xmlGen
         public List<Method> methods = new List<Method>();
 
         public jsObject() { }
-        public jsObject(ButtonHandler jsHandler)
+        public jsObject(JSHandler jsHandler)
         {
-            methods = jsHandler.parseMethods();
+            methods = new List<Method>();
             foreach(JSMethodHandler method in jsHandler.handlers)
-            {
                 methods.Add(new Method(method.name,method.methodInfo));
-            }
         }
 
         public string writeToXML()
@@ -77,30 +75,6 @@ namespace xmlGen
 
             x.Serialize(xw, this, ns);
             return sw.ToString();
-        }
-    }
-    public static class Extensions
-    {
-        public static List<Method> parseMethods(this ButtonHandler jsHandler)
-        {
-            List<string> methodNames = new List<string>();
-            foreach (MethodInfo methodInfo in jsHandler.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance))
-            {
-                if (jsHandler.getDelegate<JavascriptMethodHandler>(methodInfo) != null)
-                    methodNames.Add(methodInfo.Name);
-            }
-
-            List<Method> methods = new List<Method>();
-            foreach (MethodInfo methodInfo in jsHandler.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance))
-            {
-                if (methodNames.Contains(methodInfo.Name) && jsHandler.getDelegate<JavascriptMethodHandler>(methodInfo) == null)
-                {
-                    Method method = new Method(methodInfo);
-                    methods.Add(method);
-                }
-            }
-            return methods;
-
         }
     }
     
