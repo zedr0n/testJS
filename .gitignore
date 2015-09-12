@@ -5,6 +5,13 @@
 *.suo
 *.user
 *.sln.docstates
+*.xml
+
+# Bolt
+*.boltdata
+
+# Bridge
+bridge.js
 
 # Build results
 [Dd]ebug/
