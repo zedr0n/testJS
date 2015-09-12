@@ -8,6 +8,11 @@ namespace JS
     {
         private static UI ui = new UI();
 
+        public static void setText()
+        {
+            ui.output = "Test";
+        }
+
         [Ready]
         public static void Main()
         {

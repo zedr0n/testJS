@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Reflection;
 
 using Awesomium.Core;
-using Awesomium.Windows.Controls;
 
 using ClassDelegates;
 
@@ -37,10 +36,13 @@ namespace JSHandlers
 
             jsObject.Bind(handler.name, handler.aweHandler);
         }
-        public void bind(WebControl webControl)
+        public void bind(JSObject jsObject)
         {
             if (jsObject == null)
-                jsObject = webControl.CreateGlobalJavascriptObject(name);
+                return;
+            else
+                this.jsObject = jsObject;
+
             foreach (MethodInfo method in GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
                 if (this.getDelegate<JavascriptMethodHandler>(method) != null)

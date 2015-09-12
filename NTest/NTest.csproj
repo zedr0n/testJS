@@ -43,13 +43,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="NTest.cs" />
+    <Compile Include="GuiTest.cs" />
+    <Compile Include="xmlTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Backend\Backend.csproj">
+      <Project>{db639cfe-005e-4e82-aae2-f2f3f3244f45}</Project>
+      <Name>Backend</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ClassDelegates\ClassDelegates.csproj">
       <Project>{999f1d81-701a-4219-a78d-6aead9c936db}</Project>
       <Name>ClassDelegates</Name>

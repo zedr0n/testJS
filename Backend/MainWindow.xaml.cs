@@ -28,6 +28,7 @@ namespace Backend
     /// </summary>
     public partial class MainWindow : Window
     {
+        private JSObject jsObject = null;
         public MainWindow()
         {
             if (!WebCore.IsInitialized)
@@ -49,6 +50,7 @@ namespace Backend
             InitializeComponent();
             webControl.DocumentReady += OnDocumentReady;
             webControl.ConsoleMessage += OnConsoleMessage;
+            webControl.LoadingFrameComplete += onLoadingFrameComplete;
 
             webControl.WebSession = session;
             
@@ -61,9 +63,19 @@ namespace Backend
         private void OnDocumentReady(object sender, UrlEventArgs urlEventArgs)
         {
             webControl.DocumentReady -= OnDocumentReady;
-            ButtonHandler jsHandler = new ButtonHandler();
-            jsHandler.bind(webControl);
 
+            jsObject = webControl.CreateGlobalJavascriptObject("jsObject");
+            ButtonHandler jsHandler = new ButtonHandler();
+            jsHandler.bind(jsObject);
+
+        }
+
+        void onLoadingFrameComplete(object sender, Awesomium.Core.FrameEventArgs e)
+        {
+            webControl.LoadingFrameComplete -= onLoadingFrameComplete;
+
+            webControl.ExecuteJavascriptWithResult("JS.App.setText();");
+            //dynamic document = (Awesomium.Core.JSObject)Html5.ExecuteJavascriptWithResult("document");
         }
     }
 }

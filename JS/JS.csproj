@@ -48,7 +48,6 @@
     <Content Include="App_Readme\Bridge.NET\README.Bootstrap.txt" />
     <Content Include="App_Readme\Bridge.NET\README.jQuery.txt" />
     <Content Include="App_Readme\Bridge.NET\README.txt" />
-    <Content Include="methods.xml" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Bridge, Version=1.8.0.0, Culture=neutral, processorArchitecture=MSIL">
