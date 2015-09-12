@@ -47,6 +47,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JSHandlers", "JSHandlers\JS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassDelegates", "ClassDelegates\ClassDelegates.csproj", "{999F1D81-701A-4219-A78D-6AEAD9C936DB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NTest", "NTest\NTest.csproj", "{B731EBE0-76D6-4980-A674-AEEAF3454756}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,6 +79,10 @@ Global
 		{999F1D81-701A-4219-A78D-6AEAD9C936DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{999F1D81-701A-4219-A78D-6AEAD9C936DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{999F1D81-701A-4219-A78D-6AEAD9C936DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B731EBE0-76D6-4980-A674-AEEAF3454756}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B731EBE0-76D6-4980-A674-AEEAF3454756}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B731EBE0-76D6-4980-A674-AEEAF3454756}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B731EBE0-76D6-4980-A674-AEEAF3454756}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
