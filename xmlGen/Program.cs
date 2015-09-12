@@ -14,54 +14,70 @@ using JSHandlers;
 
 namespace xmlGen
 {
-    public class Param
+    public class MethodParser
     {
-        public string paramType;
-        public string paramName;
-
-        public Param() { }
-        public Param(string paramType, string paramName)
+        public class Param
         {
-            this.paramType = paramType;
-            this.paramName = paramName;
-        }
-    }
-    public class Method
-    {
-        public string name;
-        public List<Param> parameters = new List<Param>();
-        public string returnType;
+            public string paramType;
+            public string paramName;
 
-        public Method() { }
-
-        public Method(MethodInfo methodInfo) : this(methodInfo.Name,methodInfo)
-        {
-        }
-
-        public Method(string name, MethodInfo methodInfo)
-        {
-            this.name = name;
-            returnType = methodInfo.ReturnType.Name.ToLower();
-            foreach (ParameterInfo paramInfo in methodInfo.GetParameters())
+            public Param() { }
+            public Param(string paramType, string paramName)
             {
-                parameters.Add(new Param(paramInfo.ParameterType.Name.ToLower(), paramInfo.Name));
+                this.paramType = paramType;
+                this.paramName = paramName;
+            }
+        }
+        public class Method
+        {
+            public string name;
+            public List<Param> parameters = new List<Param>();
+            public string returnType;
+
+            public Method() { }
+
+            public Method(MethodInfo methodInfo)
+                : this(methodInfo.Name, methodInfo)
+            {
             }
 
-        }
-    }
+            public Method(string name, MethodInfo methodInfo)
+            {
+                this.name = name;
+                returnType = methodInfo.ReturnType.Name.ToLower();
+                foreach (ParameterInfo paramInfo in methodInfo.GetParameters())
+                {
+                    parameters.Add(new Param(paramInfo.ParameterType.Name.ToLower(), paramInfo.Name));
+                }
 
-    public class jsObject
-    {
+            }
+        }
+
         public List<Method> methods = new List<Method>();
 
-        public jsObject() { }
-        public jsObject(JSHandler jsHandler)
+        // automatically parse all the derived handlers from the JSHandlers assembly
+        public MethodParser() 
         {
-            methods = new List<Method>();
-            foreach(JSMethodHandler method in jsHandler.handlers)
-                methods.Add(new Method(method.name,method.methodInfo));
+            foreach (Type type in typeof(JSHandler).Assembly.GetTypes())
+            {
+                if (type.IsSubclassOf(typeof(JSHandler)))
+                {
+                    // create a default instance with parameterless constructor
+                    JSHandler jsHandler = (JSHandler)type.GetConstructor(new Type[] { }).Invoke(new object[] { });
+                    addMethods(jsHandler);
+                }
+            }
+        }
+        public MethodParser(JSHandler jsHandler)
+        {
+            addMethods(jsHandler);
         }
 
+        public void addMethods(JSHandler jsHandler)
+        {
+            foreach (JSMethodHandler method in jsHandler.handlers)
+                methods.Add(new Method(method.name, method.methodInfo));
+        }
         public string writeToXML()
         {
             XmlSerializer x = new XmlSerializer(GetType());
@@ -80,22 +96,15 @@ namespace xmlGen
     
     class Program
     {
-
-        public static string getXML()
-        {
-            return (new jsObject(new ButtonHandler())).writeToXML();
-        }
-
         static void Main(string[] args)
         {
             string xmlPath = "";
             if (args.Length > 0)
-            {
                 xmlPath = args[0] + "\\"; 
-            }
 
             StreamWriter file = new StreamWriter(xmlPath + "methods.xml");
-            file.Write(getXML());
+            MethodParser methodParser = new MethodParser();
+            file.Write(methodParser.writeToXML());
             file.Close();
         }
     }
