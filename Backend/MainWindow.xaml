@@ -7,7 +7,7 @@
 
     <Grid>
 
-        <awe:WebControl Source="asset://core/resources/testJS.html" ViewType="Window" x:Name="webControl"/>
+        <awe:WebControl Source="asset://core/resources/testJS.html" ViewType="Window" x:Name="webControl" x:FieldModifier="public"/>
 
     </Grid>
 </Window>

@@ -43,9 +43,8 @@ namespace Backend
             WebSession session = WebCore.CreateWebSession(new WebPreferences()
             {
                 SmoothScrolling = true
-            });
-            session.AddDataSource("core", new ResourceDataSource(ResourceType.Embedded));
-
+            });                
+            session.AddDataSource("core", new ResourceDataSource(ResourceType.Embedded,Assembly.GetExecutingAssembly()));
 
             InitializeComponent();
             webControl.DocumentReady += OnDocumentReady;
@@ -53,7 +52,6 @@ namespace Backend
             webControl.LoadingFrameComplete += onLoadingFrameComplete;
 
             webControl.WebSession = session;
-            
         }
 
         private void OnConsoleMessage(object sender, ConsoleMessageEventArgs e)

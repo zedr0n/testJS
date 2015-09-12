@@ -100,6 +100,7 @@
       <Assets Include="..\html\**\*" />
     </ItemGroup>
     <Copy SourceFiles="@(Assets)" DestinationFolder="..\Backend\resources\%(RecursiveDir)" OverwriteReadOnlyFiles="True" />
+
   </Target>
   <Target Name="BeforeBuild">
     <Exec Command="$(SolutionDir)\xmlGen\bin\Debug\xmlGen.exe $(ProjectDir)" />
