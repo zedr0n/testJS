@@ -19,6 +19,11 @@ namespace JS
             helloBtn.Click();
         }
 
+        public static string getOutput()
+        {
+            return ui.output;
+        }
+
         [Ready]
         public static void Main()
         {

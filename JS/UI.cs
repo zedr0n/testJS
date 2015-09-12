@@ -24,6 +24,7 @@ namespace JS
         public string output
         {
             set { content.setOutput(value); }
+            get { return content.getUserInput(); }
         }
 
         private int timeout;

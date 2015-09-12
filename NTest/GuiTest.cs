@@ -7,8 +7,10 @@ using System.Threading;
 using System.Windows.Threading;
 using System.Diagnostics;
 
+using Awesomium.Core;
 using NUnit.Framework;
 using Backend;
+using ClassDelegates;
 
 // An STA thread will be created and used to run
 // all the tests in the assembly
@@ -19,28 +21,35 @@ namespace NTest
     [TestFixture, RequiresSTA]
     public class GuiTest
     {
-        [Test]
-        public void WindowTest()
+        Backend.MainWindow window = null;
+        List<Exception> exceptions = new List<Exception>();
+
+        public void doTest(FrameEventHandler handler)
         {
             Thread newWindowThread = new Thread(new ThreadStart(() =>
             {
                 // Create and show the Window
-                Backend.MainWindow tempWindow = new Backend.MainWindow();
+                window = new Backend.MainWindow();
 
-                tempWindow.Closed += (s,e) =>
-                    Dispatcher.CurrentDispatcher.BeginInvokeShutdown(DispatcherPriority.Background);                    
+                window.Closed += (s, e) =>
+                    Dispatcher.CurrentDispatcher.BeginInvokeShutdown(DispatcherPriority.Background);
 
                 // Close the window after initialisation finished
-                tempWindow.webControl.LoadingFrameComplete += (s, e) =>
+                window.webControl.LoadingFrameComplete += (s, e) =>
+                {
+                    try
                     {
-                        // simulate click
-                        tempWindow.webControl.ExecuteJavascript("JS.App.doClick();");
-
-                        // finish testing
-                        tempWindow.Close();
-                    };
-
-                tempWindow.Show();
+                        handler.Invoke(s, e);
+                    }
+                    catch (Exception ex)
+                    {
+                        exceptions.Add(ex);
+                        window.Close();
+                    }
+                    window.Close();
+                };
+  
+                window.Show();
                 // Start the Dispatcher Processing
                 Dispatcher.Run();
             }));
@@ -53,6 +62,20 @@ namespace NTest
             newWindowThread.Start();
             // Wait for thread to finish before completing test
             newWindowThread.Join();
+
+            foreach (Exception ex in exceptions)
+                throw ex;
+        }
+        
+        [Test]
+        public void clickTest()
+        {
+            doTest( (s,e) =>
+                {
+                    // simulate click
+                    window.webControl.ExecuteJavascript("JS.App.doClick();");
+                    Assert.AreEqual("Submitted: Test", (string)window.webControl.ExecuteJavascriptWithResult("JS.App.getOutput()"));
+                });
         }
     }
 }

@@ -20,6 +20,17 @@ namespace ClassDelegates
             catch { }
             return (T)Convert.ChangeType(handler, typeof(T));
         }
+
+        public static List<T> getAllDelegates<T>(this object obj)
+        {
+            List<T> allDelegates = new List<T>();
+            foreach (MethodInfo methodInfo in obj.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly))
+                if(getDelegate<T>(obj,methodInfo) != null)
+                    allDelegates.Add(getDelegate<T>(obj,methodInfo));
+
+            return allDelegates;
+        }
+
         public static T getDelegate<T>(this object obj, MethodInfo methodInfo)
         {
             Delegate dlg = null;
