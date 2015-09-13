@@ -1,0 +1,48 @@
+﻿<#@ template  debug="true" hostSpecific="true" #>
+<#@ output extension=".cs" #>
+<#@ Assembly Name="System.Core" #>
+<#@ Assembly Name="System.Windows.Forms" #>
+<#@ Assembly Name="$(TargetDir)JS.dll"#>
+<#@ import namespace="System" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Diagnostics" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Collections" #>
+<#@ import namespace="System.Reflection" #>
+<#@ import namespace="System.Collections.Generic" #> 
+<#@ import namespace="JS"#>
+
+<#
+	Assembly jsAssembly = GetAssemblyByName("JS");
+	foreach (Type type in jsAssembly.GetTypes())
+    {
+    }
+
+#>
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using Awesomium.Windows.Controls;
+
+namespace JSWrappers
+{
+	public static class JS
+	{
+		public static void doClick(WebControl webControl)
+		{
+			webControl.ExecuteJavascript("JS.App.doClick();");
+		}
+	}
+}
+
+<#+
+Assembly GetAssemblyByName(string name)
+{
+    return AppDomain.CurrentDomain.GetAssemblies().
+           SingleOrDefault(assembly => assembly.GetName().Name == name);
+}
+#>
