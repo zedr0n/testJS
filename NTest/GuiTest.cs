@@ -22,10 +22,10 @@ namespace NTest
     public class GuiTest
     {
         Backend.MainWindow window = null;
-        List<Exception> exceptions = new List<Exception>();
 
         public void doTest(FrameEventHandler handler)
         {
+            List<Exception> exceptions = new List<Exception>();
             Thread newWindowThread = new Thread(new ThreadStart(() =>
             {
                 // Create and show the Window

@@ -12,13 +12,11 @@ namespace JS
         {
             ui.output = "Test";
         }
-
         public static void doClick()
         {
             var helloBtn = jQuery.Select("#helloBtn");
             helloBtn.Click();
         }
-
         public static string getOutput()
         {
             return ui.output;
