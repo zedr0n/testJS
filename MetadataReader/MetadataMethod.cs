@@ -34,6 +34,7 @@ namespace MetadataReader
 
         private string _name = null;
         private string _className = null;
+        private List<MetadataCustomAttribute> _attributes = null;
 
         private MethodProps methodProps = null;
 
@@ -58,6 +59,16 @@ namespace MetadataReader
             }
         }
 
+        public List<MetadataCustomAttribute> attributes
+        {
+            get 
+            {
+                if (_attributes == null)
+                    enumerateCustomAttributes();
+                return _attributes;
+            }
+        }
+
         public MetadataMethod() { }
         public MetadataMethod(IMetaDataImport import, uint token)
         {
@@ -72,6 +83,25 @@ namespace MetadataReader
 
             methodProps = new MethodProps();
             import.GetMethodProps(token, out methodProps.classToken, methodProps.szMethod, Convert.ToUInt32(methodProps.szMethod.Length), out methodProps.pchMethod, out methodProps.pwdAttr, out methodProps.ppvSigBlob, out methodProps.pcbSigBlob, out methodProps.pulCodeRVA, out methodProps.pdwImplFlags);
+        }
+
+        private void enumerateCustomAttributes()
+        {
+            // Handle of enumeration
+            uint enumHandle = 0;
+
+            uint tkType = 0;
+            uint[] attributes = new uint[10];
+            uint attributeCount = 0;
+
+            import.EnumCustomAttributes(ref enumHandle, token, tkType, attributes, Convert.ToUInt32(attributes.Length), out attributeCount);
+
+            _attributes = new List<MetadataCustomAttribute>();
+
+            for (uint attributeIndex = 0; attributeIndex < attributeCount; ++attributeIndex)
+                _attributes.Add(new MetadataCustomAttribute(import, attributes[attributeIndex], token));
+
+            import.CloseEnum(enumHandle);
         }
     }
 }

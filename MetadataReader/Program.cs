@@ -11,60 +11,42 @@ using System.Runtime.InteropServices;
 
 namespace MetadataReader
 {
-    class Program
+    class COMReader
     {
-        private static string attributeName = "Export"; 
+        public static string ExportAttribute = "Export"; 
 
-        private static void EnumerateCustomAttributes(IMetaDataImport import, uint scope)
+        IMetaDataImport import = null;
+
+        private List<MetadataType> _types = null;
+
+        public List<MetadataType> types
         {
-            // Handle of enumeration
-            uint enumHandle = 0;
-
-            uint tkType = 0;
-            uint[] attributes = new uint[10];
-            uint attributeCount = 0;
-            IntPtr ppBlob = IntPtr.Zero;
-            uint pcbSize = 0;
-
-            import.EnumCustomAttributes(ref enumHandle, scope, tkType, attributes, Convert.ToUInt32(attributes.Length), out attributeCount);
-
-            for(uint attributeIndex = 0; attributeIndex < attributeCount; ++attributeIndex)
+            get
             {
-                uint attribute = attributes[attributeIndex];
-
-                uint objectToken = 0;
-                uint ptkType = 0;
-
-
-                import.GetCustomAttributeProps(attribute, out objectToken, out ptkType, out ppBlob, out pcbSize);
-
-                string attrName = new MetadataMethod(import, ptkType).className;
-                if (attrName.Contains(attributeName))
-                    Console.WriteLine(new MetadataMethod(import,scope).name + " : " + attrName);
+                if (_types == null)
+                    EnumerateTypeDefinitions();
+                return _types;
             }
         }
-        private static void EnumerateMethods(IMetaDataImport import, uint typeDef)
+
+        private COMReader() {}
+        public COMReader(IMetaDataImport import)
         {
-            // Handle of enumeration
-            uint enumHandle = 0;
-
-            uint[] methods = new uint[10];
-
-            // get the methods
-            uint methodCount = 0;
-            import.EnumMethods(ref enumHandle, typeDef, methods, Convert.ToUInt32(methods.Length), out methodCount);
-
-            for (uint methodIndex = 0; methodIndex < methodCount; ++methodIndex)
-            {
-                uint token = methods[methodIndex];
-
-                MetadataMethod method = new MetadataMethod(import, token);
-
-                EnumerateCustomAttributes(import, token);
-            }
-                
+            this.import = import;
         }
-        private static void EnumerateTypeDefinitions(IMetaDataImport import)
+
+        public List<MetadataCustomAttribute> EnumerateCustomAttributes(string name)
+        {
+            List<MetadataCustomAttribute> list = new List<MetadataCustomAttribute>();
+
+            foreach (MetadataType type in types)
+                foreach (MetadataMethod method in type.methods)
+                    list.AddRange(method.attributes.Where(attribute => attribute.name == name));
+
+            return list;
+        }
+
+        private void EnumerateTypeDefinitions()
         {
             //Handle of the enumeration. 
             uint enumHandle = 0;
@@ -75,27 +57,22 @@ namespace MetadataReader
 
             import.EnumTypeDefs(ref enumHandle, typeDefs, Convert.ToUInt32(typeDefs.Length), out count);
 
+            _types = new List<MetadataType>();
             //Continue reading TypeDef's while he typeDefs array contains any new TypeDef. 
             while (count > 0)
             {
                 for (uint typeDefsIndex = 0; typeDefsIndex < count; typeDefsIndex++)
-                {
-                    uint token = typeDefs[typeDefsIndex];
-
-                    MetadataType type = new MetadataType(import, token);
-                    //Write the TypeDef's name to the console. 
-                    //Console.WriteLine(type.name);
-
-                    EnumerateMethods(import, token);
-
-
-                }
+                    _types.Add(new MetadataType(import, typeDefs[typeDefsIndex]));
 
                 import.EnumTypeDefs(ref enumHandle, typeDefs, Convert.ToUInt32(typeDefs.Length), out count);
             }
 
             import.CloseEnum(enumHandle);
         } 
+    }
+
+    class Program
+    {
 
         static string getAssemblyPath(string assemblyName)
         {
@@ -120,8 +97,11 @@ namespace MetadataReader
             //The rawScope contains an IMetaDataImport interface. 
             import = (IMetaDataImport)rawScope;
 
-            //Write to the console the TypeDefs by calling a method. 
-            EnumerateTypeDefinitions(import); 
+            COMReader reader = new COMReader(import);
+            //reader.EnumerateTypeDefinitions(); 
+            //reader.EnumerateCustomAttributes(0);
+            foreach (MetadataCustomAttribute attribute in reader.EnumerateCustomAttributes(COMReader.ExportAttribute))
+                Console.WriteLine(attribute.method.className + "." + attribute.method.name);
         }
     }
 }

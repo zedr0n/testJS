@@ -44,6 +44,7 @@
     <Compile Include="CorMetaDataDispenserExClass.cs" />
     <Compile Include="IMetaDataDispenserEx.cs" />
     <Compile Include="IMetaDataImport.cs" />
+    <Compile Include="MetadataCustomAttribute.cs" />
     <Compile Include="MetaDataDispenserEx.cs" />
     <Compile Include="MetadataMethod.cs" />
     <Compile Include="MetadataType.cs" />

@@ -21,6 +21,7 @@ namespace JS
             var helloBtn = jQuery.Select("#helloBtn");
             helloBtn.Click();
         }
+        [Export]
         public static string getOutput()
         {
             return ui.output;
