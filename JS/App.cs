@@ -11,6 +11,7 @@ namespace JS
     {
         private static UI ui = new UI();
 
+        [Export]
         public static void setText()
         {
             ui.output = "Test";

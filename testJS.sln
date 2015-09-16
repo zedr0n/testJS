@@ -10,6 +10,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JS", "JS\JS.csproj", "{3A30
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Backend", "Backend\Backend.csproj", "{DB639CFE-005E-4E82-AAE2-F2F3F3244F45}"
 	ProjectSection(ProjectDependencies) = postProject
+		{53D9752C-34D9-41CB-8281-25F40E9D487A} = {53D9752C-34D9-41CB-8281-25F40E9D487A}
 		{AFD63A70-A6F8-499B-A5EB-AE33DFD8A984} = {AFD63A70-A6F8-499B-A5EB-AE33DFD8A984}
 	EndProjectSection
 EndProject
@@ -52,6 +53,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JSWrappers", "JSWrappers\JSWrappers.csproj", "{83B39797-0DE7-4EE3-B1B1-7CD7628FCF2B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetadataReader", "MetadataReader\MetadataReader.csproj", "{53D9752C-34D9-41CB-8281-25F40E9D487A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3A3063BA-BC2E-4A91-B893-5713D1D16BC6} = {3A3063BA-BC2E-4A91-B893-5713D1D16BC6}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

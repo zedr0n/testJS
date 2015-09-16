@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 using System.IO;
-using JS;
-using System.Reflection;
+using System.Xml;
+using System.Xml.Serialization;
 using System.Runtime.InteropServices;
 
 namespace MetadataReader
@@ -71,20 +71,49 @@ namespace MetadataReader
         } 
     }
 
+    public class Exports
+    {
+        public List<string> methods = new List<string>();
+
+        public Exports() { }
+        
+        public void add(string method)
+        {
+            methods.Add(method);
+        }
+
+        public string writeToXML()
+        {
+            XmlSerializer x = new XmlSerializer(GetType());
+            StringWriter sw = new StringWriter();
+            XmlWriter xw = XmlWriter.Create(sw, new XmlWriterSettings
+            {
+                OmitXmlDeclaration = true
+            });
+            XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
+            ns.Add("", "");
+
+            x.Serialize(xw, this, ns);
+            return sw.ToString();
+        }
+    }
+
     class Program
     {
-
-        static string getAssemblyPath(string assemblyName)
-        {
-            Assembly jsAssembly = Assembly.Load("JS");
-            UriBuilder uri = new UriBuilder(jsAssembly.CodeBase);
-            return Uri.UnescapeDataString(uri.Path);
-        }
 
         static void Main(string[] args)
         {
 
-            string assemblyPath = getAssemblyPath("JS");
+            if (args.Length < 1)
+                return;
+
+            string assemblyPath = args[0];
+            string xmlPath = "";
+            if(args.Length > 1)
+                xmlPath = args[1] + "\\";
+
+            if (!File.Exists(assemblyPath))
+                return;
 
             IMetaDataDispenserEx dispenser = new MetaDataDispenserEx();
             IMetaDataImport import = null;
@@ -100,8 +129,15 @@ namespace MetadataReader
             COMReader reader = new COMReader(import);
             //reader.EnumerateTypeDefinitions(); 
             //reader.EnumerateCustomAttributes(0);
+
+            StreamWriter file = new StreamWriter(xmlPath + "exports.xml");
+            Exports methods = new Exports();
+
             foreach (MetadataCustomAttribute attribute in reader.EnumerateCustomAttributes(COMReader.ExportAttribute))
-                Console.WriteLine(attribute.method.className + "." + attribute.method.name);
+                methods.add(attribute.method.className + "." + attribute.method.name);
+
+            file.Write(methods.writeToXML());
+            file.Close();
         }
     }
 }

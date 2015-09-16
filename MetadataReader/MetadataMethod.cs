@@ -14,7 +14,7 @@ namespace MetadataReader
             {
                 get
                 {
-                    return new string(szMethod, 0, Convert.ToInt32(pchMethod));
+                    return new string(szMethod, 0, Convert.ToInt32(pchMethod)).Replace("\0",string.Empty);
                 }
             }
 
