@@ -2,6 +2,9 @@
 using Bridge.Html5;
 using Bridge.jQuery2;
 
+[System.AttributeUsage(System.AttributeTargets.Method)]
+public class Export : System.Attribute { }
+
 namespace JS
 {
     public class App
@@ -12,6 +15,7 @@ namespace JS
         {
             ui.output = "Test";
         }
+        [Export]
         public static void doClick()
         {
             var helloBtn = jQuery.Select("#helloBtn");
