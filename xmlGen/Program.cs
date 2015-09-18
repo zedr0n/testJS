@@ -11,6 +11,7 @@ using System.Reflection;
 
 using Awesomium.Core;
 using JSHandlers;
+using MetadataReader;
 
 namespace xmlGen
 {
@@ -35,32 +36,46 @@ namespace xmlGen
             public string returnType;
 
             public Method() { }
-
             public Method(MethodInfo methodInfo)
                 : this(methodInfo.Name, methodInfo)
             {
             }
-
             public Method(string name, MethodInfo methodInfo)
             {
                 this.name = name;
                 returnType = methodInfo.ReturnType.Name.ToLower();
                 foreach (ParameterInfo paramInfo in methodInfo.GetParameters())
-                {
                     parameters.Add(new Param(paramInfo.ParameterType.Name.ToLower(), paramInfo.Name));
-                }
-
+            }
+            // default void method with no parameters
+            public Method(string name)
+            {
+                this.name = name;
+                this.returnType = "void";
+            }
+            // explicit method constructor
+            public Method(string name, string returnType, string[] parameterTypes, string[] parameterNames)
+            {
+                this.name = name;
+                this.returnType = returnType;
+                for(int i = 0; i < parameterNames.Length; ++i)
+                    parameters.Add(new Param(parameterTypes[i], parameterNames[i]));
             }
         }
 
+        COMReader comReader = null;
         public List<Method> methods = new List<Method>();
 
+        private MethodParser() { }
         // automatically parse all the derived handlers from the JSHandlers assembly
-        public MethodParser() 
+        public MethodParser(Type T) 
         {
-            foreach (Type type in typeof(JSHandler).Assembly.GetTypes())
+            if(T != typeof(JSHandler))
+                return;
+
+            foreach (Type type in T.Assembly.GetTypes())
             {
-                if (type.IsSubclassOf(typeof(JSHandler)))
+                if (type.IsSubclassOf(T))
                 {
                     // create a default instance with parameterless constructor
                     JSHandler jsHandler = (JSHandler)type.GetConstructor(new Type[] { }).Invoke(new object[] { });
@@ -71,6 +86,15 @@ namespace xmlGen
         public MethodParser(JSHandler jsHandler)
         {
             addMethods(jsHandler);
+        }
+        // parse the assembly definitions using metadata reader
+        public MethodParser(string assemblyPath)
+        {
+            comReader = new COMReader(assemblyPath);
+
+            foreach (MetadataMethod method in comReader.getMethodsWithCustomAttribute(COMReader.ExportAttribute))
+                methods.Add(new Method(method.name));
+
         }
 
         public void addMethods(JSHandler jsHandler)
@@ -99,11 +123,17 @@ namespace xmlGen
         static void Main(string[] args)
         {
             string xmlPath = "";
+            string assemblyPath = "";
             if (args.Length > 0)
-                xmlPath = args[0] + "\\"; 
+            {
+                if(args[0].Last() != '\\')
+                    xmlPath = args[0] + "\\";
+            }
+            if (args.Length > 1)
+                assemblyPath = args[1];
 
             StreamWriter file = new StreamWriter(xmlPath + "methods.xml");
-            MethodParser methodParser = new MethodParser();
+            MethodParser methodParser = assemblyPath == "" ? new MethodParser(typeof(JSHandler)) : new MethodParser(assemblyPath);
             file.Write(methodParser.writeToXML());
             file.Close();
         }

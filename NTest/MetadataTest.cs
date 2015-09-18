@@ -67,7 +67,7 @@ namespace NTest
         {
             HashSet<string> methodNames = new HashSet<string>();
             HashSet<string> classNames = new HashSet<string>();
-            foreach(MetadataCustomAttribute attribute in comReader.EnumerateCustomAttributes("Export"))
+            foreach(MetadataCustomAttribute attribute in comReader.getCustomAttributesContaining("Export"))
             {
                 methodNames.Add(attribute.method.name);
                 classNames.Add(attribute.method.className);
@@ -78,18 +78,6 @@ namespace NTest
 
             Assert.AreEqual(expectedClassNames, classNames.ToArray());
             Assert.AreEqual(expectedMethodNames, methodNames.ToArray());
-        }
-
-        [Test]
-        public void testExport()
-        {
-            Exports exports = new Exports();
-            foreach (MetadataCustomAttribute attribute in comReader.EnumerateCustomAttributes("Export"))
-                exports.add(attribute.method.className + "." + attribute.method.name);
-
-            string expectedXML = @"<Exports><methods><string>JS.App.doClick</string><string>JS.App.doTest</string></methods></Exports>";
-            Assert.AreEqual(expectedXML,exports.writeToXML());
-
         }
     }
 }

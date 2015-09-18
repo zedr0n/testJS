@@ -13,7 +13,7 @@ namespace MetadataReader
 {
     public class COMReader
     {
-        public static string ExportAttribute = "Export"; 
+        public static string ExportAttribute = "Export";
 
         IMetaDataImport import = null;
 
@@ -24,12 +24,12 @@ namespace MetadataReader
             get
             {
                 if (_types == null)
-                    EnumerateTypeDefinitions();
+                    enumerateTypeDefinitions();
                 return _types;
             }
         }
 
-        private COMReader() {}
+        private COMReader() { }
         public COMReader(string assemblyPath)
         {
             IMetaDataDispenserEx dispenser = new MetaDataDispenserEx();
@@ -47,7 +47,7 @@ namespace MetadataReader
             this.import = import;
         }
 
-        public List<MetadataCustomAttribute> EnumerateCustomAttributes(string name)
+        public List<MetadataCustomAttribute> getCustomAttributesContaining(string name)
         {
             List<MetadataCustomAttribute> list = new List<MetadataCustomAttribute>();
 
@@ -57,7 +57,21 @@ namespace MetadataReader
 
             return list;
         }
-        void EnumerateTypeDefinitions()
+        public List<MetadataMethod> getMethodsWithCustomAttribute(string attributeName)
+        {
+            List<MetadataMethod> list = new List<MetadataMethod>();
+
+            foreach (MetadataType type in types)
+                foreach (MetadataMethod method in type.methods)
+                    list.AddRange(method.attributes
+                                    .Where(attribute => attribute.name.Contains(attributeName))
+                                    .Select(attribute => attribute.method)
+                                    );
+
+            return list;
+        }
+
+        void enumerateTypeDefinitions()
         {
             //Handle of the enumeration. 
             uint enumHandle = 0;
@@ -79,66 +93,6 @@ namespace MetadataReader
             }
 
             import.CloseEnum(enumHandle);
-        } 
-    }
-
-    public class Exports
-    {
-        public List<string> methods = new List<string>();
-
-        public Exports() { }
-        
-        public void add(string method)
-        {
-            methods.Add(method);
-        }
-
-        public string writeToXML()
-        {
-            XmlSerializer x = new XmlSerializer(GetType());
-            StringWriter sw = new StringWriter();
-            XmlWriter xw = XmlWriter.Create(sw, new XmlWriterSettings
-            {
-                OmitXmlDeclaration = true
-            });
-            XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
-            ns.Add("", "");
-
-            x.Serialize(xw, this, ns);
-            return sw.ToString();
-        }
-    }
-
-    class Program
-    {
-
-        static void Main(string[] args)
-        {
-
-            if (args.Length < 1)
-                return;
-
-            string assemblyPath = args[0];
-            string xmlPath = "";
-            if(args.Length > 1)
-                xmlPath = args[1] + "\\";
-
-            if (!File.Exists(assemblyPath))
-                return;
-
-            COMReader comReader = new COMReader(assemblyPath);
-
-            //reader.EnumerateTypeDefinitions(); 
-            //reader.EnumerateCustomAttributes(0);
-
-            StreamWriter file = new StreamWriter(xmlPath + "exports.xml");
-            Exports methods = new Exports();
-
-            foreach (MetadataCustomAttribute attribute in comReader.EnumerateCustomAttributes(COMReader.ExportAttribute))
-                methods.add(attribute.method.className + "." + attribute.method.name);
-
-            file.Write(methods.writeToXML());
-            file.Close();
         }
     }
 }

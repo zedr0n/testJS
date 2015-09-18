@@ -66,6 +66,10 @@
       <Project>{ee2c1fe1-7a20-4927-b924-51218d331a2a}</Project>
       <Name>JSHandlers</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MetadataReader\MetadataReader.csproj">
+      <Project>{53d9752c-34d9-41cb-8281-25f40e9d487a}</Project>
+      <Name>MetadataReader</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

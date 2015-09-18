@@ -24,7 +24,7 @@ namespace NTest
         [Test]
         public void testXML()
         {
-            Assert.AreEqual(xmlResult, (new MethodParser()).writeToXML());
+            Assert.AreEqual(xmlResult, (new MethodParser(typeof(JSHandler))).writeToXML());
         }
     }
 }

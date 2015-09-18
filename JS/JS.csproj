@@ -82,6 +82,7 @@
     <ProjectReference Include="..\xmlGen\xmlGen.csproj">
       <Project>{54025206-c4a4-481f-8419-30dec72d12e9}</Project>
       <Name>xmlGen</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -100,10 +101,10 @@
       <Assets Include="..\html\**\*" />
     </ItemGroup>
     <Copy SourceFiles="@(Assets)" DestinationFolder="..\Backend\resources\%(RecursiveDir)" OverwriteReadOnlyFiles="True" />
-    <Exec Command="$(SolutionDir)MetadataReader\bin\Debug\metadataReader.exe $(TargetPath) $(SolutionDir)JSWrappers" />
+    <Exec Command="$(SolutionDir)\xmlGen\bin\Debug\xmlGen.exe $(SolutionDir)JSWrappers $(TargetPath)" />
   </Target>
   <Target Name="BeforeBuild">
-    <Exec Command="$(SolutionDir)xmlGen\bin\Debug\xmlGen.exe $(ProjectDir)" />
+    <Exec Command="$(SolutionDir)\xmlGen\bin\Debug\xmlGen.exe $(ProjectDir)" />
   </Target>
   <Import Project="..\packages\Clarius.TransformOnBuild.1.1.12\build\Clarius.TransformOnBuild.targets" Condition="Exists('..\packages\Clarius.TransformOnBuild.1.1.12\build\Clarius.TransformOnBuild.targets')" />
 </Project>
