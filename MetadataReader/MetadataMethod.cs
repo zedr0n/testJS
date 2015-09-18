@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MetadataReader
 {
-    class MetadataMethod
+    public class MetadataMethod
     {
         class MethodProps
         {

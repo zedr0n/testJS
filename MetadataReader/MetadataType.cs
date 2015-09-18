@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MetadataReader
 {
-    class MetadataType
+    public class MetadataType
     {
         private IMetaDataImport import = null;
         private uint token = 0;

@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 
 namespace MetadataReader
 {
-    class COMReader
+    public class COMReader
     {
         public static string ExportAttribute = "Export"; 
 
@@ -30,6 +30,18 @@ namespace MetadataReader
         }
 
         private COMReader() {}
+        public COMReader(string assemblyPath)
+        {
+            IMetaDataDispenserEx dispenser = new MetaDataDispenserEx();
+            object rawScope = null;
+            //GUID of the IMetaDataImport interface. 
+            Guid metaDataImportGuid = new Guid("7DAC8207-D3AE-4c75-9B67-92801A497D44");
+
+            //Open the assembly. 
+            dispenser.OpenScope(assemblyPath, 0, ref metaDataImportGuid, out rawScope);
+            //The rawScope contains an IMetaDataImport interface. 
+            this.import = (IMetaDataImport)rawScope;
+        }
         public COMReader(IMetaDataImport import)
         {
             this.import = import;
@@ -41,12 +53,11 @@ namespace MetadataReader
 
             foreach (MetadataType type in types)
                 foreach (MetadataMethod method in type.methods)
-                    list.AddRange(method.attributes.Where(attribute => attribute.name == name));
+                    list.AddRange(method.attributes.Where(attribute => attribute.name.Contains(name)));
 
             return list;
         }
-
-        private void EnumerateTypeDefinitions()
+        void EnumerateTypeDefinitions()
         {
             //Handle of the enumeration. 
             uint enumHandle = 0;
@@ -115,25 +126,15 @@ namespace MetadataReader
             if (!File.Exists(assemblyPath))
                 return;
 
-            IMetaDataDispenserEx dispenser = new MetaDataDispenserEx();
-            IMetaDataImport import = null;
-            object rawScope = null;
-            //GUID of the IMetaDataImport interface. 
-            Guid metaDataImportGuid = new Guid("7DAC8207-D3AE-4c75-9B67-92801A497D44");
+            COMReader comReader = new COMReader(assemblyPath);
 
-            //Open the assembly. 
-            dispenser.OpenScope(assemblyPath, 0, ref metaDataImportGuid, out rawScope);
-            //The rawScope contains an IMetaDataImport interface. 
-            import = (IMetaDataImport)rawScope;
-
-            COMReader reader = new COMReader(import);
             //reader.EnumerateTypeDefinitions(); 
             //reader.EnumerateCustomAttributes(0);
 
             StreamWriter file = new StreamWriter(xmlPath + "exports.xml");
             Exports methods = new Exports();
 
-            foreach (MetadataCustomAttribute attribute in reader.EnumerateCustomAttributes(COMReader.ExportAttribute))
+            foreach (MetadataCustomAttribute attribute in comReader.EnumerateCustomAttributes(COMReader.ExportAttribute))
                 methods.add(attribute.method.className + "." + attribute.method.name);
 
             file.Write(methods.writeToXML());
