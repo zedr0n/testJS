@@ -100,10 +100,10 @@
       <Assets Include="..\html\**\*" />
     </ItemGroup>
     <Copy SourceFiles="@(Assets)" DestinationFolder="..\Backend\resources\%(RecursiveDir)" OverwriteReadOnlyFiles="True" />
-    <Exec Command="$(SolutionDir)\MetadataReader\bin\Debug\metadataReader.exe $(TargetPath) $(SolutionDir)\JSWrappers" />
+    <Exec Command="$(SolutionDir)MetadataReader\bin\Debug\metadataReader.exe $(TargetPath) $(SolutionDir)JSWrappers" />
   </Target>
   <Target Name="BeforeBuild">
-    <Exec Command="$(SolutionDir)\xmlGen\bin\Debug\xmlGen.exe $(ProjectDir)" />
+    <Exec Command="$(SolutionDir)xmlGen\bin\Debug\xmlGen.exe $(ProjectDir)" />
   </Target>
   <Import Project="..\packages\Clarius.TransformOnBuild.1.1.12\build\Clarius.TransformOnBuild.targets" Condition="Exists('..\packages\Clarius.TransformOnBuild.1.1.12\build\Clarius.TransformOnBuild.targets')" />
 </Project>
