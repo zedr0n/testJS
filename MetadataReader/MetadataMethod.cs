@@ -33,7 +33,7 @@ namespace MetadataReader
         private uint token = 0;
 
         private string _name = null;
-        private string _className = null;
+        private string _typeName = null;
         private List<MetadataCustomAttribute> _attributes = null;
 
         private MethodProps methodProps = null;
@@ -48,11 +48,11 @@ namespace MetadataReader
             }
         }
 
-        public string className
+        public string typeName
         {
             get
             {
-                if (_className == null)
+                if (_typeName == null)
                     getProps();
                 MetadataType type = new MetadataType(import, methodProps.classToken);
                 return type.name;

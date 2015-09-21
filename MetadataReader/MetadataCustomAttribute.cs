@@ -60,7 +60,7 @@ namespace MetadataReader
             uint ptkType = 0;
 
             import.GetCustomAttributeProps(token, out objectToken, out ptkType, out ppBlob, out pcbSize);
-            _name = new MetadataMethod(import, ptkType).className.Replace("\0",string.Empty);
+            _name = new MetadataMethod(import, ptkType).typeName.Replace("\0",string.Empty);
         }
     }
 }
