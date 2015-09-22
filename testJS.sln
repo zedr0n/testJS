@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JS", "JS\JS.csproj", "{3A3063BA-BC2E-4A91-B893-5713D1D16BC6}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -15,6 +15,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Backend", "Backend\Backend.
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xmlGen", "xmlGen\xmlGen.csproj", "{54025206-C4A4-481F-8419-30DEC72D12E9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{53D9752C-34D9-41CB-8281-25F40E9D487A} = {53D9752C-34D9-41CB-8281-25F40E9D487A}
+	EndProjectSection
 EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "html", "http://localhost:52630", "{AFD63A70-A6F8-499B-A5EB-AE33DFD8A984}"
 	ProjectSection(WebsiteProperties) = preProject
@@ -53,9 +56,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JSWrappers", "JSWrappers\JSWrappers.csproj", "{83B39797-0DE7-4EE3-B1B1-7CD7628FCF2B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetadataReader", "MetadataReader\MetadataReader.csproj", "{53D9752C-34D9-41CB-8281-25F40E9D487A}"
-	ProjectSection(ProjectDependencies) = postProject
-		{3A3063BA-BC2E-4A91-B893-5713D1D16BC6} = {3A3063BA-BC2E-4A91-B893-5713D1D16BC6}
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

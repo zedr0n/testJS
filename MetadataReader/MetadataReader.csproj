@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{53D9752C-34D9-41CB-8281-25F40E9D487A}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MetadataReader</RootNamespace>
     <AssemblyName>MetadataReader</AssemblyName>
@@ -31,6 +31,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -41,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="COMReader.cs" />
     <Compile Include="CorMetaDataDispenserExClass.cs" />
     <Compile Include="IMetaDataDispenserEx.cs" />
     <Compile Include="IMetaDataImport.cs" />
@@ -48,7 +52,6 @@
     <Compile Include="MetaDataDispenserEx.cs" />
     <Compile Include="MetadataMethod.cs" />
     <Compile Include="MetadataType.cs" />
-    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
