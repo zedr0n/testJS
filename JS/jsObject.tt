@@ -21,6 +21,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Bridge;
+using Bridge.Html5;
 
 <# string fileNamespace="JS";#>
 <# 
@@ -32,15 +33,38 @@ using Bridge;
 
 namespace <#=fileNamespace#>
 {
-    [Ignore]
     public static class <#=jsObject#>
     {
+		static bool THROW_EXCEPTION = false;
+
+		public static bool isDefined()
+		{
+			return _isDefined();
+		}
+
+		[Template("typeof jsObject != 'undefined' ")]
+		public static extern bool _isDefined();
 <#
 	foreach(JSMethod method in xmlReader.methods)
     {
 #>
 		[Template("<#=jsObject#>.<#=method.name#>(<# foreach(Param param in method.parameters) { #>{<#=param.paramName#>}<# if(param != method.parameters.Last() )#>,<# }#>)")]
-		public static extern <#=method.returnType#> <#=method.name#>(<# foreach(Param param in method.parameters) { #> <#=param.paramType#> <#=param.paramName#> <# if(param != method.parameters.Last() )#> ,<# }#>);
+		public static extern <#=method.returnType#> _<#=method.name#>(<# foreach(Param param in method.parameters) { #> <#=param.paramType#> <#=param.paramName#> <# if(param != method.parameters.Last() )#> ,<# }#>);
+
+		public static <#=method.returnType#> <#=method.name#>(<# foreach(Param param in method.parameters) { #> <#=param.paramType#> <#=param.paramName#> <# if(param != method.parameters.Last() )#> ,<# }#>)
+		{
+			if(isDefined())
+				<# if(method.returnType != "void") #>return <##>_<#=method.name#>(<# foreach(Param param in method.parameters) { #> <#=param.paramName#> <# if(param != method.parameters.Last() )#> ,<# }#>);
+			else
+			{
+				Console.Log("<#=method.name#> only supported by backend");
+				if( THROW_EXCEPTION )
+					Global.Alert("C# backend required");	
+			}		
+			<# if(method.returnType != "void") { #>
+			return new <#=method.returnType#>();
+			<#}#>
+		}
 <#	} #>
 	}
 }
