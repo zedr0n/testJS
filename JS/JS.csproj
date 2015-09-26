@@ -100,6 +100,7 @@
     <ItemGroup>
       <Assets Include="..\html\**\*" Exclude="..\html\**\_pgbackup\*;..\html\**\*.json;..\html\**\*.config;..\html\**\*.publishproj;..\html\**\*.pubxml" />
     </ItemGroup>
+    <RemoveDir Directories="..\Backend\resources" />
     <Copy SourceFiles="@(Assets)" DestinationFolder="..\Backend\resources\%(RecursiveDir)" OverwriteReadOnlyFiles="True" />
     <Exec Command="$(SolutionDir)\xmlGen\bin\$(Configuration)\xmlGen.exe $(SolutionDir)JSWrappers $(TargetPath)" />
   </Target>
