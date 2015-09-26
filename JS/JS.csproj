@@ -101,10 +101,10 @@
       <Assets Include="..\html\**\*" />
     </ItemGroup>
     <Copy SourceFiles="@(Assets)" DestinationFolder="..\Backend\resources\%(RecursiveDir)" OverwriteReadOnlyFiles="True" />
-    <Exec Command="$(SolutionDir)\xmlGen\bin\Debug\xmlGen.exe $(SolutionDir)JSWrappers $(TargetPath)" />
+    <Exec Command="$(SolutionDir)\xmlGen\bin\$(Configuration)\xmlGen.exe $(SolutionDir)JSWrappers $(TargetPath)" />
   </Target>
   <Target Name="BeforeBuild">
-    <Exec Command="$(SolutionDir)\xmlGen\bin\Debug\xmlGen.exe $(ProjectDir)" />
+    <Exec Command="$(SolutionDir)\xmlGen\bin\$(Configuration)\xmlGen.exe $(ProjectDir)" />
   </Target>
   <Import Project="..\packages\Clarius.TransformOnBuild.1.1.12\build\Clarius.TransformOnBuild.targets" Condition="Exists('..\packages\Clarius.TransformOnBuild.1.1.12\build\Clarius.TransformOnBuild.targets')" />
 </Project>
