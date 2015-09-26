@@ -108,7 +108,7 @@ namespace NTest
         public void testXML()
         {
             MethodParser methodParser = new MethodParser(assemblyPath);
-            string expectedXML = "<MethodParser><methods><Method><name>doClick</name><parameters /><returnType>void</returnType><className>App</className><namespaceName>JS</namespaceName></Method><Method><name>doTest</name><parameters /><returnType>void</returnType><className>App</className><namespaceName>JS</namespaceName></Method></methods><namespaces><string>JS</string></namespaces><classNames><string>App</string></classNames></MethodParser>";
+            string expectedXML = "<MethodParser><methods><Method><name>doClick</name><parameters /><returnType>void</returnType><className>App</className><namespaceName>JS</namespaceName></Method><Method><name>doTest</name><parameters /><returnType>void</returnType><className>App</className><namespaceName>JS</namespaceName></Method></methods></MethodParser>";
             Assert.AreEqual(expectedXML, methodParser.writeToXML());
         }
 

@@ -37,6 +37,9 @@ namespace xmlGen
             public string className = null;
             public string namespaceName = null;
 
+            public bool ShouldSerializeclassName() { return className != null; }
+            public bool ShouldSerializenamespaceName() { return namespaceName != null; }
+
             public Method() { }
             public Method(MethodInfo methodInfo)
                 : this(methodInfo.Name, methodInfo, null, null) { }
@@ -75,10 +78,12 @@ namespace xmlGen
 
         COMReader comReader = null;
         public List<Method> methods = new List<Method>();
+        [XmlIgnore]
         public List<string> namespaces
         {
             get { return methods.Select(method => method.namespaceName).Distinct().ToList(); }
         }
+        [XmlIgnore]
         public List<string> classNames
         {
             get { return methods.Select(method => method.className).Distinct().ToList(); }
