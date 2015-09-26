@@ -103,11 +103,11 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\html\testJS.html">
+    <Content Include="..\html\index.html">
       <Link>resources\testJS.html</Link>
     </Content>
     <Resource Include="FodyWeavers.xml" />
-    <Content Include="resources\testJS.js" />
+    <Content Include="resources\JS.js" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\JSHandlers\JSHandlers.csproj">
