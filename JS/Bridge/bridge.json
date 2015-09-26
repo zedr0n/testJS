@@ -1,9 +1,10 @@
 {
-    "output": "../html/assets/js"
-    
+    "output": "../html/assets/js",
+    "outputFormatting": "Minified"
+
     // Uncomment to add TypeScript Definition file (.d.ts) generation to your project.
     // , "generateTypeScript": true
 
-    // More options available at: 
+    // More options available at:
     // http://bridge.net/kb/global-configuration
 }
