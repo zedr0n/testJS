@@ -14,7 +14,7 @@ namespace JS
         [Export]
         public static void setText()
         {
-            ui.output = "Test";
+            ui.output = "bridge.net";
         }
         [Export]
         public static void doClick()
@@ -42,7 +42,24 @@ namespace JS
                     Console.Log("Button clicked");
                     //string msg = getUserInput();
                     //ui.content.setOutput(Script.Write<string>("jsObject.onClick(msg)"));
-                    ui.output = jsObject.onClick(ui.input);
+                    if(jsObject.isDefined())
+                        ui.output = jsObject.onClick(ui.input);
+                    else
+                    {
+                        if (!ui.input.Contains("http"))
+                            ui.output = "http://" + ui.input;
+                    }
+
+                    if(ui.output.Length > 0)
+                    {
+                        ui.hideHeader();
+                        var externalPageContainer = jQuery.Select("#externalPage");
+                        externalPageContainer.Append(new IFrameElement()
+                        {
+                            Src = ui.output,
+                            ClassName = "embed-responsive-item"
+                        });
+                    }
                 });
 
         }

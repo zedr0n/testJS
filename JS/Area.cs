@@ -30,6 +30,12 @@ namespace JS
             updateCss = true;
         }
 
+        public void hide()
+        {
+            height = 0;
+            jquery.Css("display","none");
+        }
+
         public int margin
         {
             get

@@ -57,9 +57,23 @@ namespace JS
            
         }
 
+        public void hideHeader()
+        {
+            header.hide();
+            content.height = Window.InnerHeight - header.outerHeight - footer.outerHeight;
+        }
+
         public void onResize()
         {
             maxHeight = Window.InnerHeight;
+
+            // don't resize if hidden
+            if (header.height == 0)
+            {
+                content.height = maxHeight - footer.outerHeight;
+                return;
+            }
+
             header.updateCss = false;
             // shrink the header if not fitting into window
             while ( height > maxHeight && header.height > 0 )

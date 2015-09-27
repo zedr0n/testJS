@@ -11,7 +11,10 @@ namespace JSHandlers
         // proper handlers
         public string onClick(string textInput)
         {
-            return "Submitted: " + textInput;
+            if (!textInput.Contains("http"))
+                return "http://" + textInput;
+            
+            return textInput;
         }
         public void onTest()
         {

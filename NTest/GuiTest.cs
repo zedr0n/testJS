@@ -74,7 +74,7 @@ namespace NTest
                 {
                     // simulate click
                     window.webControl.ExecuteJavascript("JS.App.doClick();");
-                    Assert.AreEqual("Submitted: Test", (string)window.webControl.ExecuteJavascriptWithResult("JS.App.getOutput()"));
+                    Assert.AreEqual("http://bridge.net", (string)window.webControl.ExecuteJavascriptWithResult("JS.App.getOutput()"));
                 });
         }
     }
