@@ -10,6 +10,7 @@ using MetadataReader;
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable NotAccessedField.Global
 // ReSharper disable CollectionNeverQueried.Global
+// ReSharper disable FieldCanBeMadeReadOnly.Global
 
 namespace xmlGen
 {
@@ -32,8 +33,8 @@ namespace xmlGen
             public string name;
             public readonly List<Param> parameters = new List<Param>();
             public string returnType;
-            public readonly string className;
-            public readonly string namespaceName;
+            public string className;
+            public string namespaceName;
 
             public bool shouldSerializeclassName() { return className != null; }
             public bool shouldSerializenamespaceName() { return namespaceName != null; }
