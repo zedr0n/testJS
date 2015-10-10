@@ -1,5 +1,4 @@
-﻿using Bridge;
-using Bridge.Html5;
+﻿using Bridge.Html5;
 using Bridge.jQuery2;
 
 [System.AttributeUsage(System.AttributeTargets.Method)]
@@ -29,7 +28,7 @@ namespace JS
         }
 
         [Ready]
-        public static void Main()
+        public static void main()
         {
             //var msg = jQuery.Select("#helloMsg");
 

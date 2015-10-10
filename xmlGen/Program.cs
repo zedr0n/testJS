@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using System.Xml;
 using System.Xml.Serialization;
 using System.IO;
 using System.Reflection;
-
-using Awesomium.Core;
 using JSHandlers;
 using MetadataReader;
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable NotAccessedField.Global
+// ReSharper disable CollectionNeverQueried.Global
 
 namespace xmlGen
 {
@@ -32,13 +30,13 @@ namespace xmlGen
         public class Method
         {
             public string name;
-            public List<Param> parameters = new List<Param>();
+            public readonly List<Param> parameters = new List<Param>();
             public string returnType;
-            public string className = null;
-            public string namespaceName = null;
+            public readonly string className;
+            public readonly string namespaceName;
 
-            public bool ShouldSerializeclassName() { return className != null; }
-            public bool ShouldSerializenamespaceName() { return namespaceName != null; }
+            public bool shouldSerializeclassName() { return className != null; }
+            public bool shouldSerializenamespaceName() { return namespaceName != null; }
 
             public Method() { }
             public Method(MethodInfo methodInfo)
@@ -76,7 +74,6 @@ namespace xmlGen
             }
         }
 
-        COMReader comReader = null;
         public List<Method> methods = new List<Method>();
         [XmlIgnore]
         public List<string> namespaces
@@ -101,21 +98,19 @@ namespace xmlGen
 
         private MethodParser() { }
         // automatically parse all the derived handlers from the JSHandlers assembly
-        public MethodParser(Type T) 
+        public MethodParser(Type T)
         {
             if(T != typeof(JSHandler))
                 return;
 
-            foreach (Type type in T.Assembly.GetTypes())
+            foreach (var jsHandler in from type in T.Assembly.GetTypes() where type.IsSubclassOf(T) 
+                                      let constructorInfo = type.GetConstructor(new Type[] { }) 
+                                      where constructorInfo != null select (JSHandler)constructorInfo.Invoke(new object[] { }))
             {
-                if (type.IsSubclassOf(T))
-                {
-                    // create a default instance with parameterless constructor
-                    JSHandler jsHandler = (JSHandler)type.GetConstructor(new Type[] { }).Invoke(new object[] { });
-                    addMethods(jsHandler);
-                }
+                addMethods(jsHandler);
             }
         }
+
         public MethodParser(JSHandler jsHandler)
         {
             addMethods(jsHandler);
@@ -123,16 +118,14 @@ namespace xmlGen
         // parse the assembly definitions using metadata reader
         public MethodParser(string assemblyPath)
         {
-            comReader = new COMReader(assemblyPath);
+            var comReader = new ComReader(assemblyPath);
 
-            foreach (MetadataMethod method in comReader.getMethodsWithCustomAttribute(COMReader.ExportAttribute))
+            foreach (MetadataMethod method in comReader.getMethodsWithCustomAttribute(ComReader.exportAttribute))
             {
-                string name = method.name;
-                string[] tokens = method.typeName.Split('.');
+                var tokens = method.typeName.Split('.');
                 if(tokens.Length > 1)
                     methods.Add(new Method(method.name,tokens[0],tokens[1]));
             }
-
         }
 
         public void addMethods(JSHandler jsHandler)
@@ -140,24 +133,25 @@ namespace xmlGen
             foreach (JSMethodHandler method in jsHandler.handlers)
                 methods.Add(new Method(method.name, method.methodInfo));
         }
-        public string writeToXML()
+        public string writeToXml()
         {
-            XmlSerializer x = new XmlSerializer(GetType());
-            StringWriter sw = new StringWriter();
-            XmlWriter xw = XmlWriter.Create(sw, new XmlWriterSettings
+            var x = new XmlSerializer(GetType());
+            var sw = new StringWriter();
+            var xw = XmlWriter.Create(sw, new XmlWriterSettings
             {
                 OmitXmlDeclaration = true
             });
-            XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
+            var ns = new XmlSerializerNamespaces();
             ns.Add("", "");
 
             x.Serialize(xw, this, ns);
             return sw.ToString();
         }
     }
-    
-    class Program
+
+    static class Program
     {
+        // ReSharper disable once InconsistentNaming
         static void Main(string[] args)
         {
             string xmlPath = "";
@@ -172,7 +166,7 @@ namespace xmlGen
 
             StreamWriter file = new StreamWriter(xmlPath + "methods.xml");
             MethodParser methodParser = assemblyPath == "" ? new MethodParser(typeof(JSHandler)) : new MethodParser(assemblyPath);
-            file.Write(methodParser.writeToXML());
+            file.Write(methodParser.writeToXml());
             file.Close();
         }
     }

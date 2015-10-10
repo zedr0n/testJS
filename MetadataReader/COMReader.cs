@@ -1,23 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using System.IO;
-using System.Xml;
-using System.Xml.Serialization;
-using System.Runtime.InteropServices;
 
 namespace MetadataReader
 {
-    public class COMReader
+    public class ComReader
     {
-        public static string ExportAttribute = "Export";
+        public static string exportAttribute = "Export";
 
-        IMetaDataImport import = null;
+        readonly IMetaDataImport _import;
 
-        private List<MetadataType> _types = null;
+        private List<MetadataType> _types;
 
         public List<MetadataType> types
         {
@@ -29,22 +22,22 @@ namespace MetadataReader
             }
         }
 
-        private COMReader() { }
-        public COMReader(string assemblyPath)
+        private ComReader() { }
+        public ComReader(string assemblyPath)
         {
             IMetaDataDispenserEx dispenser = new MetaDataDispenserEx();
-            object rawScope = null;
+            object rawScope;
             //GUID of the IMetaDataImport interface. 
-            Guid metaDataImportGuid = new Guid("7DAC8207-D3AE-4c75-9B67-92801A497D44");
+            var metaDataImportGuid = new Guid("7DAC8207-D3AE-4c75-9B67-92801A497D44");
 
             //Open the assembly. 
             dispenser.OpenScope(assemblyPath, 0, ref metaDataImportGuid, out rawScope);
             //The rawScope contains an IMetaDataImport interface. 
-            this.import = (IMetaDataImport)rawScope;
+            _import = (IMetaDataImport)rawScope;
         }
-        public COMReader(IMetaDataImport import)
+        public ComReader(IMetaDataImport import)
         {
-            this.import = import;
+            _import = import;
         }
 
         public List<MetadataCustomAttribute> getCustomAttributesContaining(string name)
@@ -76,23 +69,23 @@ namespace MetadataReader
             //Handle of the enumeration. 
             uint enumHandle = 0;
             //We will read maximum 10 TypeDefs at once which will be stored in this array. 
-            uint[] typeDefs = new uint[10];
+            var typeDefs = new uint[10];
             //Number of read TypeDefs. 
-            uint count = 0;
+            uint count;
 
-            import.EnumTypeDefs(ref enumHandle, typeDefs, Convert.ToUInt32(typeDefs.Length), out count);
+            _import.EnumTypeDefs(ref enumHandle, typeDefs, Convert.ToUInt32(typeDefs.Length), out count);
 
             _types = new List<MetadataType>();
             //Continue reading TypeDef's while he typeDefs array contains any new TypeDef. 
             while (count > 0)
             {
                 for (uint typeDefsIndex = 0; typeDefsIndex < count; typeDefsIndex++)
-                    _types.Add(new MetadataType(import, typeDefs[typeDefsIndex]));
+                    _types.Add(new MetadataType(_import, typeDefs[typeDefsIndex]));
 
-                import.EnumTypeDefs(ref enumHandle, typeDefs, Convert.ToUInt32(typeDefs.Length), out count);
+                _import.EnumTypeDefs(ref enumHandle, typeDefs, Convert.ToUInt32(typeDefs.Length), out count);
             }
 
-            import.CloseEnum(enumHandle);
+            _import.CloseEnum(enumHandle);
         }
     }
 }

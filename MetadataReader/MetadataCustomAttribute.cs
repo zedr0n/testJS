@@ -1,30 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MetadataReader
 {
     public class MetadataCustomAttribute
     {
-        private IMetaDataImport import = null;
-        private uint token = 0;
+        private readonly IMetaDataImport _import;
+        private readonly uint _token;
 
-        private string _name = null;
-        private MetadataMethod _method = null;
+        private string _name;
+        private readonly MetadataMethod _method;
 
         public MetadataCustomAttribute() { }
+/*
         public MetadataCustomAttribute(IMetaDataImport import, uint token)
         {
-            this.import = import;
-            this.token = token;
+            this._import = import;
+            this._token = token;
         }
-
+*/
         public MetadataCustomAttribute(IMetaDataImport import, uint token, uint methodToken)
         {
-            this.import = import;
-            this.token = token;
+            _import = import;
+            _token = token;
             if(methodToken != 0)
                 _method = new MetadataMethod(import, methodToken);
         }
@@ -51,16 +48,16 @@ namespace MetadataReader
 
         private void getProps()
         {
-            if (import == null || token == 0)
+            if (_import == null || _token == 0)
                 return;
 
-            IntPtr ppBlob = IntPtr.Zero;
-            uint pcbSize = 0;
-            uint objectToken = 0;
-            uint ptkType = 0;
+            IntPtr ppBlob;
+            uint pcbSize;
+            uint objectToken;
+            uint ptkType;
 
-            import.GetCustomAttributeProps(token, out objectToken, out ptkType, out ppBlob, out pcbSize);
-            _name = new MetadataMethod(import, ptkType).typeName.Replace("\0",string.Empty);
+            _import.GetCustomAttributeProps(_token, out objectToken, out ptkType, out ppBlob, out pcbSize);
+            _name = new MetadataMethod(_import, ptkType).typeName.Replace("\0",string.Empty);
         }
     }
 }

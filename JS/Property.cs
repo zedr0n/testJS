@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using Bridge.jQuery2;
 
 namespace JS
 {
     public class ChangeEventArgs<T> : EventArgs
     {
-        public T prev;
-        public T next;
+        public readonly T prev;
+        public readonly T next;
 
         public ChangeEventArgs(T prev, T next)
         {
@@ -20,11 +15,11 @@ namespace JS
         }
     }
 
-    public delegate void EventHandler<ChangeEventArgs>(object sender, ChangeEventArgs e);
+    public delegate void EventHandler<in TChangeEventArgs>(object sender, TChangeEventArgs e);
 
     public class Property<T> : ICloneable
     {
-        protected jQuery jquery;
+        protected readonly jQuery jquery;
         protected bool mUpdateCss = true;
 
         public bool updateCss
@@ -32,15 +27,16 @@ namespace JS
             get { return mUpdateCss; }
             set {     
                 mUpdateCss = value;
-                writeCSS();
+                writeCss();
             }
         }
 
         protected T value;
-        public T init;
+        public readonly T init;
 
         protected Property() { }
-        public Property(jQuery jquery)
+
+        protected Property(jQuery jquery)
         {
             this.jquery = jquery;
             read();
@@ -59,7 +55,7 @@ namespace JS
         public virtual void set(T value)
         {
             this.value = value;
-            writeCSS();
+            writeCss();
         }
         public virtual T get()
         {
@@ -69,13 +65,11 @@ namespace JS
         // event handling
         public event EventHandler CssUpdate;
 
-        public void writeCSS()
+        private void writeCss()
         {
-            if(mUpdateCss)
-            {
-                write();
-                onCssUpdate(EventArgs.Empty);
-            }
+            if (!mUpdateCss) return;
+            write();
+            onCssUpdate(EventArgs.Empty);
         }
 
         protected virtual void onCssUpdate(EventArgs e)
@@ -116,7 +110,7 @@ namespace JS
         protected OuterHeight() { }
         public OuterHeight(jQuery jquery, Height height) : base(jquery) 
         {
-            height.HeightChange += onChange;
+            height.heightChange += onChange;
         }
 
         protected override void read()
@@ -141,18 +135,18 @@ namespace JS
             return new Height(this);
         }
 
-        public event EventHandler<ChangeEventArgs<Height>> HeightChange;
+        public event EventHandler<ChangeEventArgs<Height>> heightChange;
 
 
         protected void onChange(ChangeEventArgs<Height> e)
         {
-            if (HeightChange != null)
-                HeightChange(this, e);
+            if (heightChange != null)
+                heightChange(this, e);
         }
 
         public override void set(int value)
         {
-            Height prev = (Height) this.Clone();
+            var prev = (Height) Clone();
             base.set(value);
             onChange(new ChangeEventArgs<Height>(prev,this));
         }

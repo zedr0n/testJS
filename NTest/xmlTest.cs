@@ -18,13 +18,13 @@ namespace NTest
         [Test]
         public void testButtonXML()
         {
-            Assert.AreEqual(xmlResult, (new MethodParser(new ButtonHandler())).writeToXML());
+            Assert.AreEqual(xmlResult, (new MethodParser(new ButtonHandler())).writeToXml());
         }
 
         [Test]
         public void testXML()
         {
-            Assert.AreEqual(xmlResult, (new MethodParser(typeof(JSHandler))).writeToXML());
+            Assert.AreEqual(xmlResult, (new MethodParser(typeof(JSHandler))).writeToXml());
         }
     }
 }

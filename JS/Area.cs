@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Bridge.jQuery2;
+﻿using Bridge.jQuery2;
 
 namespace JS
 {
     public class Area
     {
-        protected jQuery jquery;
+        protected readonly jQuery jquery;
         protected Margin mMargin;
         protected OuterHeight mOuterHeight;
         protected Height mHeight;

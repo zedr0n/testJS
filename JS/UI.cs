@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Bridge;
 using Bridge.Html5;
 using Bridge.jQuery2;
 
@@ -12,9 +6,9 @@ namespace JS
 {
     public class UI
     {
-        public Header header = new Header();
-        public Footer footer = new Footer();
-        public Content content = new Content();
+        public readonly Header header = new Header();
+        public readonly Footer footer = new Footer();
+        public readonly Content content = new Content();
 
         public string input
         {
@@ -29,7 +23,7 @@ namespace JS
 
         private int timeout;
         private int maxHeight;
-        static private int HEIGHT_REDRAW = 10;
+        private const int HEIGHT_REDRAW = 10;
 
         public int height
         {

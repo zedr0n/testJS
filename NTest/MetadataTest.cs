@@ -1,24 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.CodeDom.Compiler;
-using System.Diagnostics;
 using Microsoft.CSharp;
 
 using NUnit.Framework;
 using MetadataReader;
 using xmlGen;
+#pragma warning disable 618
 
 namespace NTest
 {
     [TestFixture]
     public class MetadataTest
     {
-        COMReader comReader = null;
-        MethodParser methodParser = null;
-        string assemblyPath = null;
+        ComReader _comReader;
+        string _assemblyPath;
         
         
         static string csCode = @"
@@ -37,32 +33,34 @@ namespace NTest
             }
             ";
 
-        string[] expectedMethodNames = { "doClick", "doTest" };
+        private readonly string[] _expectedMethodNames = {"doClick", "doTest"};
 
-        string createAssembly()
+        static string createAssembly()
         {
             CSharpCodeProvider codeProvider = new CSharpCodeProvider();
-            ICodeCompiler icc = codeProvider.CreateCompiler();
-            System.CodeDom.Compiler.CompilerParameters parameters = new CompilerParameters();
-            parameters.GenerateExecutable = false;
-            parameters.OutputAssembly = "AutoGen.dll";
-            CompilerResults results = icc.CompileAssemblyFromSource(parameters, csCode);
+            var icc = codeProvider.CreateCompiler();
+            CompilerParameters parameters = new CompilerParameters
+            {
+                GenerateExecutable = false,
+                OutputAssembly = "AutoGen.dll"
+            };
+            icc.CompileAssemblyFromSource(parameters, csCode);
 
             return parameters.OutputAssembly;
         }
 
         [TestFixtureSetUp]
-        public void Init()
+        public void init()
         {
-            assemblyPath = createAssembly();
-            comReader = new COMReader(assemblyPath);
+            _assemblyPath = createAssembly();
+            _comReader = new ComReader(_assemblyPath);
         }
 
         [Test]
         public void testMetadataType()
         {
             HashSet<string> typeNames = new HashSet<string>();
-            foreach(MetadataType type in comReader.types)
+            foreach(var type in _comReader.types)
                 typeNames.Add(type.name);
 
             string[] expected = { "Export", "JS.App"};
@@ -72,9 +70,9 @@ namespace NTest
         [Test]
         public void testCustomAttribute()
         {
-            HashSet<string> methodNames = new HashSet<string>();
-            HashSet<string> typeNames = new HashSet<string>();
-            foreach(MetadataCustomAttribute attribute in comReader.getCustomAttributesContaining(COMReader.ExportAttribute))
+            var methodNames = new HashSet<string>();
+            var typeNames = new HashSet<string>();
+            foreach(MetadataCustomAttribute attribute in _comReader.getCustomAttributesContaining(ComReader.exportAttribute))
             {
                 methodNames.Add(attribute.method.name);
                 typeNames.Add(attribute.method.typeName);
@@ -83,7 +81,7 @@ namespace NTest
             string[] expectedTypeNames = { "JS.App" };
 
             Assert.AreEqual(expectedTypeNames, typeNames.ToArray());
-            Assert.AreEqual(expectedMethodNames, methodNames.ToArray());
+            Assert.AreEqual(_expectedMethodNames, methodNames.ToArray());
         }
 
         [Test]
@@ -91,7 +89,7 @@ namespace NTest
         {
             HashSet<string> methodNames = new HashSet<string>();
             HashSet<string> typeNames = new HashSet<string>();
-            foreach (MetadataMethod method in comReader.getMethodsWithCustomAttribute(COMReader.ExportAttribute))
+            foreach (MetadataMethod method in _comReader.getMethodsWithCustomAttribute(ComReader.exportAttribute))
             {
                 methodNames.Add(method.name);
                 typeNames.Add(method.typeName);
@@ -105,33 +103,33 @@ namespace NTest
         }
 
         [Test]
-        public void testXML()
+        public void testXml()
         {
-            MethodParser methodParser = new MethodParser(assemblyPath);
+            MethodParser methodParser = new MethodParser(_assemblyPath);
             string expectedXML = "<MethodParser><methods><Method><name>doClick</name><parameters /><returnType>void</returnType><className>App</className><namespaceName>JS</namespaceName></Method><Method><name>doTest</name><parameters /><returnType>void</returnType><className>App</className><namespaceName>JS</namespaceName></Method></methods></MethodParser>";
-            Assert.AreEqual(expectedXML, methodParser.writeToXML());
+            Assert.AreEqual(expectedXML, methodParser.writeToXml());
         }
 
         [Test]
         public void testNamespaces()
         {
-            MethodParser methodParser = new MethodParser(assemblyPath);
+            MethodParser methodParser = new MethodParser(_assemblyPath);
             string[] expectedNamespaces = { "JS" };
             Assert.AreEqual(expectedNamespaces, methodParser.namespaces.ToArray());
 
             foreach(string namespaceName in methodParser.namespaces)
-                Assert.AreEqual(expectedMethodNames,methodParser.getMethodsByNamespace(namespaceName).Select(method => method.name).ToArray());
+                Assert.AreEqual(_expectedMethodNames,methodParser.getMethodsByNamespace(namespaceName).Select(method => method.name).ToArray());
         }
 
         [Test]
         public void testClassNames()
         {
-            MethodParser methodParser = new MethodParser(assemblyPath);
+            MethodParser methodParser = new MethodParser(_assemblyPath);
             string[] expectedClassNames = { "App" };
             Assert.AreEqual(expectedClassNames, methodParser.classNames.ToArray());
 
             foreach (string className in methodParser.classNames)
-                Assert.AreEqual(expectedMethodNames, methodParser.getMethodsByClassName(className).Select(method => method.name).ToArray());
+                Assert.AreEqual(_expectedMethodNames, methodParser.getMethodsByClassName(className).Select(method => method.name).ToArray());
         }
     }
 }

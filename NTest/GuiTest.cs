@@ -1,16 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Threading;
 using System.Windows.Threading;
-using System.Diagnostics;
-
 using Awesomium.Core;
 using NUnit.Framework;
-using Backend;
-using ClassDelegates;
 
 // An STA thread will be created and used to run
 // all the tests in the assembly
@@ -21,21 +14,21 @@ namespace NTest
     [TestFixture, RequiresSTA]
     public class GuiTest
     {
-        Backend.MainWindow window = null;
+        Backend.MainWindow _window;
 
-        public void doTest(FrameEventHandler handler)
+        private void doTest(FrameEventHandler handler)
         {
             List<Exception> exceptions = new List<Exception>();
-            Thread newWindowThread = new Thread(new ThreadStart(() =>
+            var newWindowThread = new Thread(() =>
             {
                 // Create and show the Window
-                window = new Backend.MainWindow();
+                _window = new Backend.MainWindow();
 
-                window.Closed += (s, e) =>
+                _window.Closed += (s, e) =>
                     Dispatcher.CurrentDispatcher.BeginInvokeShutdown(DispatcherPriority.Background);
 
                 // Close the window after initialisation finished
-                window.webControl.LoadingFrameComplete += (s, e) =>
+                _window.webControl.LoadingFrameComplete += (s, e) =>
                 {
                     try
                     {
@@ -44,15 +37,15 @@ namespace NTest
                     catch (Exception ex)
                     {
                         exceptions.Add(ex);
-                        window.Close();
+                        _window.Close();
                     }
-                    window.Close();
+                    _window.Close();
                 };
   
-                window.Show();
+                _window.Show();
                 // Start the Dispatcher Processing
                 Dispatcher.Run();
-            }));
+            });
 
             // Set the apartment state
             newWindowThread.SetApartmentState(ApartmentState.STA);
@@ -73,8 +66,8 @@ namespace NTest
             doTest( (s,e) =>
                 {
                     // simulate click
-                    window.webControl.ExecuteJavascript("JS.App.doClick();");
-                    Assert.AreEqual("http://bridge.net", (string)window.webControl.ExecuteJavascriptWithResult("JS.App.getOutput()"));
+                    _window.webControl.ExecuteJavascript("JS.App.doClick();");
+                    Assert.AreEqual("http://bridge.net", (string)_window.webControl.ExecuteJavascriptWithResult("JS.App.getOutput()"));
                 });
         }
     }

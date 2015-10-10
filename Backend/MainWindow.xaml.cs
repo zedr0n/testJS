@@ -1,17 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -47,20 +35,20 @@ namespace Backend
             session.AddDataSource("core", new ResourceDataSource(ResourceType.Embedded,Assembly.GetExecutingAssembly()));
 
             InitializeComponent();
-            webControl.DocumentReady += OnDocumentReady;
-            webControl.ConsoleMessage += OnConsoleMessage;
+            webControl.DocumentReady += onDocumentReady;
+            webControl.ConsoleMessage += onConsoleMessage;
             webControl.LoadingFrameComplete += onLoadingFrameComplete;
 
             webControl.WebSession = session;
         }
 
-        private void OnConsoleMessage(object sender, ConsoleMessageEventArgs e)
+        private static void onConsoleMessage(object sender, ConsoleMessageEventArgs e)
         {
             Debug.Print("{0} at {1}: {2} at '{3}'", e.EventName, e.LineNumber, e.Message, e.Source);
         }
-        private void OnDocumentReady(object sender, UrlEventArgs urlEventArgs)
+        private void onDocumentReady(object sender, UrlEventArgs urlEventArgs)
         {
-            webControl.DocumentReady -= OnDocumentReady;
+            webControl.DocumentReady -= onDocumentReady;
 
             jsObject = webControl.CreateGlobalJavascriptObject("jsObject");
             ButtonHandler jsHandler = new ButtonHandler();
@@ -68,7 +56,7 @@ namespace Backend
 
         }
 
-        void onLoadingFrameComplete(object sender, Awesomium.Core.FrameEventArgs e)
+        void onLoadingFrameComplete(object sender, FrameEventArgs e)
         {
             webControl.LoadingFrameComplete -= onLoadingFrameComplete;
 
